@@ -52,6 +52,16 @@ import { useProvidedXstateInspector } from 'expo-xstate-inspect';
 This uses the already created inspector in the Context. It is null for production builds. 
 
 
+### Troubleshooting
+
+### Compilation issue - Cannot find Event
+This is because @statelyai/inspect bundles up a lot of web dependencies which break metro bundler. 
+You can fix this by patching @statelyai/inspect and removing the offending functions `createSkyInspector`. 
+```
+pnpm patch @statelyai/inspect
+```
+Then edit index.js and remove the functions that create inspectors that we will not use on mobile, and commit the patch. (this should work using yarn as well)
+
 
 
 # Contributing
