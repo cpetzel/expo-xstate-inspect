@@ -1,6 +1,6 @@
 # @dev-plugins/xstate-inspect
 
-Inspect your xstate machines
+Inspect your V5 xstate machines
 
 # API documentation
 
@@ -21,9 +21,42 @@ For bare React Native projects, you must ensure that you have [installed and con
 npm install @dev-plugins/xstate-inspect
 ```
 
+Note, this only works with XState V5 machines.
+
+### Usage
+There are two ways to use this plugin. You can either construct your own inspector using our hook, or you can use our Context Provider which will make the inspector available to your entire app. 
+
+##### Create Single Inspector
+
+
+
+##### Use Inspector Context
+
+First, create a Provider that contains our inspector
+```typescript
+import { XStateInspectorProvider } from '@dev-plugins/xstate-inspect';
+
+const App = () => (
+    <XStateInspectorProvider>
+      {/* rest of app */}
+    </XStateInspectorProvider>
+);
+```
+Then in a component where you have a machine, grab the inspector using this hook.
+
+```typescript
+import { useXstateInspector } from '@dev-plugins/xstate-inspect';
+
+ const inspector = useXstateInspector();
+  const [state, send] = useMachine(audioMachine, {
+    inspect: inspector?.inspect,
+  });
+```
+This uses the already created inspector in the Context. It is null for production builds. 
+
 
 
 
 # Contributing
 
-Contributions are very welcome! Please refer to guidelines described in the [contributing guide]( https://github.com/expo/expo#contributing).
+Contributions are very welcome!
