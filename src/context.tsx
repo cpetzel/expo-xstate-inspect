@@ -1,5 +1,5 @@
 import React, { ReactNode, createContext, useContext } from "react";
-import { useXStateInspect, type Inspector } from "./useXStateInspect";
+import { useXStateInspector, type Inspector } from "./useXStateInspect";
 const XStateInspectContext = createContext<Inspector | null>(null);
 
 /**
@@ -8,7 +8,7 @@ const XStateInspectContext = createContext<Inspector | null>(null);
 export const XStateInspectorProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const inspector = useXStateInspect();
+  const inspector = useXStateInspector();
 
   return (
     <XStateInspectContext.Provider value={inspector}>
@@ -20,7 +20,7 @@ export const XStateInspectorProvider: React.FC<{ children: ReactNode }> = ({
 /**
  * Provides access to the xstate inspector instance.
  */
-export const useXstateInspector = () => {
+export const useProvidedXstateInspector = () => {
   const inspector = useContext(XStateInspectContext);
   return inspector;
 };

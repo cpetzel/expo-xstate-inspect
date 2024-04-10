@@ -1,15 +1,15 @@
-export let useXStateInspect: typeof import("./useXStateInspect").useXStateInspect;
+export let useXStateInspector: typeof import("./useXStateInspect").useXStateInspector;
 export let XStateInspectorProvider: typeof import("./context").XStateInspectorProvider;
-export let useXstateInspector: typeof import("./context").useXstateInspector;
+export let useProvidedXstateInspector: typeof import("./context").useProvidedXstateInspector;
 
 // @ts-ignore process.env.NODE_ENV is defined by metro transform plugins
 if (process.env.NODE_ENV !== "production") {
-  useXStateInspect = require("./useXStateInspect").useXStateInspect;
+  useXStateInspector = require("./useXStateInspect").useXStateInspect;
   XStateInspectorProvider = require("./context").XStateInspectorProvider;
-  useXstateInspector = require("./context").useXstateInspector;
+  useProvidedXstateInspector = require("./context").useProvidedXstateInspector;
 } else {
   //@ts-ignore
-  useXStateInspect = () => {};
+  useXStateInspector = () => null;
   XStateInspectorProvider = ({ children }) => children;
-  useXstateInspector = () => null;
+  useProvidedXstateInspector = () => null;
 }

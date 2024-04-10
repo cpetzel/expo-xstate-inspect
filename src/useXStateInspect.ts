@@ -5,7 +5,7 @@ import { ExpoAdapter } from "./ExpoAdapter";
 import { Inspector as XStateInspector } from "@statelyai/inspect/src/types";
 export type Inspector = XStateInspector<ExpoAdapter>;
 
-export function useXStateInspect(): Inspector | null {
+export function useXStateInspector(): Inspector | null {
   const client = useDevToolsPluginClient("xstate-inspect");
 
   const inspector = useMemo(() => {

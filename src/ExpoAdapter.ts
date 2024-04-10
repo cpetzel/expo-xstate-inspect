@@ -47,9 +47,8 @@ export class ExpoAdapter implements Adapter {
     if (this.client.isConnected()) {
       this.client.sendMessage("event", serializedEvent);
     }
-    console.log("test");
     // for now we always defer the events so if the webpage is refreshed, the web inspector can receive all of the actor and events
     // without this, the website would error because it doesn't know the actor config json (when they are created)
-    // this.deferredEvents.push(serializedEvent);
+    this.deferredEvents.push(serializedEvent);
   }
 }
