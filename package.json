@@ -1,5 +1,5 @@
 {
-  "name": "@dev-plugins/xstate-inspect",
+  "name": "expo-xstate-inspect",
   "version": "0.0.1",
   "description": "Inspect your xstate machines",
   "main": "build/index.js",

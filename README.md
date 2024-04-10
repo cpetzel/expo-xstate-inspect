@@ -1,4 +1,4 @@
-# @dev-plugins/xstate-inspect
+# expo-xstate-inspect
 
 Inspect your V5 xstate machines using expo dev tooling
 
@@ -6,7 +6,7 @@ Inspect your V5 xstate machines using expo dev tooling
 ### Add the package to your npm dependencies
 
 ```
-npm install @dev-plugins/xstate-inspect
+npm install expo-xstate-inspect
 ```
 
 Note, this only works with XState V5 machines.
@@ -16,7 +16,7 @@ There are two ways to use this plugin. You can either construct your own inspect
 
 ### Create Inspector Manually
 ```typescript
-import { useXStateInspector } from '@dev-plugins/xstate-inspect';
+import { useXStateInspector } from 'expo-xstate-inspect';
 
 const Component = () => {
   const inspector = useXstateInspector();
@@ -31,7 +31,7 @@ const Component = () => {
 
 First, create a Provider that will internally create the inspector.
 ```typescript
-import { XStateInspectorProvider } from '@dev-plugins/xstate-inspect';
+import { XStateInspectorProvider } from 'expo-xstate-inspect';
 
 const App = () => (
     <XStateInspectorProvider>
@@ -42,7 +42,7 @@ const App = () => (
 Then in a component where you have a machine, grab the inspector using this hook.
 
 ```typescript
-import { useProvidedXstateInspector } from '@dev-plugins/xstate-inspect';
+import { useProvidedXstateInspector } from 'expo-xstate-inspect';
 
  const inspector = useProvidedXstateInspector();
   const [state, send] = useMachine(audioMachine, {

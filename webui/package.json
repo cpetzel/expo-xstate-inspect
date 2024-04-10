@@ -1,5 +1,5 @@
 {
-  "name": "@dev-plugins/xstate-inspect-webui",
+  "name": "expo-xstate-inspect-webui",
   "version": "0.0.1-private",
   "main": "index.js",
   "scripts": {

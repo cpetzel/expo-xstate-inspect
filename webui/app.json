@@ -4,7 +4,7 @@
       "bundler": "metro"
     },
     "experiments": {
-      "baseUrl": "/_expo/plugins/@dev-plugins/xstate-inspect"
+      "baseUrl": "/_expo/plugins/expo-xstate-inspect"
     }
   }
 }
