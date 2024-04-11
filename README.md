@@ -54,14 +54,24 @@ This uses the already created inspector in the Context. It is null for productio
 
 ### Troubleshooting
 
-### Compilation issue - Cannot find Event
-This is because @statelyai/inspect bundles up a lot of web dependencies which break metro bundler. 
-You can fix this by patching @statelyai/inspect and removing the offending functions `createSkyInspector`. 
-```
-pnpm patch @statelyai/inspect
-```
-Then edit index.js and remove the functions that create inspectors that we will not use on mobile, and commit the patch. (this should work using yarn as well)
+### Compilation issue - Cannot find EventTarget
 
+The error looks like this...
+```
+ERROR  
+  PartySocket requires a global 'EventTarget' class to be available!
+  You can polyfill this global by adding this to your code before any partysocket imports: 
+  
+  import 'partysocket/event-target-polyfill';
+```
+
+Instead of using this polyfill, we can install  'event-target-shim' and then polyfill it.
+```
+import { EventTarget, Event } from 'event-target-shim';
+global.EventTarget = EventTarget;
+global.Event = Event;
+
+```
 
 
 # Contributing
