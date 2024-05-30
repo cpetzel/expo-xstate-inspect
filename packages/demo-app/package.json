@@ -13,7 +13,7 @@
     "event-target-shim": "^6.0.2",
     "expo": "~51.0.9",
     "expo-status-bar": "~1.12.1",
-    "expo-xstate-inspect": "file:../",
+    "expo-xstate-inspect": "*",
     "react": "18.2.0",
     "react-native": "0.74.1"
   },

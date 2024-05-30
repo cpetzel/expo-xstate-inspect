@@ -1,5 +1,5 @@
 {
   "compilerOptions": {},
-  "extends": "../tsconfig.json",
+  "extends": "expo/tsconfig.base",
   "include": ["./App.tsx"]
 }

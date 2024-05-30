@@ -1,4 +1,21 @@
 import "partysocket/event-target-polyfill";
+console.log("hereee");
+// class Event {
+//   constructor(type, target) {
+//     this.type = type;
+//     this.target = target;
+//   }
+// }
+
+// globalThis.Event = Event;
+// class Event {
+//   constructor(type, target) {
+//     this.type = type;
+//     this.target = target;
+//   }
+// }
+
+// globalThis.Event = Event;
 
 import { StatusBar } from "expo-status-bar";
 import { Button, StyleSheet, Text, View } from "react-native";

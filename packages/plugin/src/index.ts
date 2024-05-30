@@ -1,3 +1,4 @@
+import "partysocket/event-target-polyfill";
 export let useXStateInspector: typeof import("./useXStateInspect").useXStateInspector;
 export let XStateInspectorProvider: typeof import("./context").XStateInspectorProvider;
 export let useProvidedXstateInspector: typeof import("./context").useProvidedXstateInspector;
