@@ -1,10 +1,14 @@
 {
   "name": "expo-xstate-inspect",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Inspect your xstate machines",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cpetzel/expo-xstate-inspect.git"
+  },
   "scripts": {
     "build": "expo-module build",
     "build:all": "expo-module prepare && cd webui && npx expo export -p web --output-dir ../dist",
