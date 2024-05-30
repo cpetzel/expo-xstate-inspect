@@ -4,7 +4,7 @@ export let useProvidedXstateInspector: typeof import("./context").useProvidedXst
 
 // @ts-ignore process.env.NODE_ENV is defined by metro transform plugins
 if (process.env.NODE_ENV !== "production") {
-  useXStateInspector = require("./useXStateInspect").useXStateInspect;
+  useXStateInspector = require("./useXStateInspect").useXStateInspector;
   XStateInspectorProvider = require("./context").XStateInspectorProvider;
   useProvidedXstateInspector = require("./context").useProvidedXstateInspector;
 } else {
