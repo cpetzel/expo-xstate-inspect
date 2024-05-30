@@ -9,11 +9,13 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@xstate/react": "^4.1.1",
+    "event-target-shim": "^6.0.2",
     "expo": "~51.0.9",
     "expo-status-bar": "~1.12.1",
+    "expo-xstate-inspect": "file:../",
     "react": "18.2.0",
-    "react-native": "0.74.1",
-    "expo-xstate-inspect": "file:../"
+    "react-native": "0.74.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
