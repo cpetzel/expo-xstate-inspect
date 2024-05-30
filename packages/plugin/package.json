@@ -27,9 +27,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@statelyai/inspect": "^0.2.5",
+    "@statelyai/inspect": "^0.3.1",
     "fast-safe-stringify": "^2.1.1",
-    "xstate": "^5.9.1"
+    "xstate": "^5.13.0"
   },
   "devDependencies": {
     "expo": "50.0.14",

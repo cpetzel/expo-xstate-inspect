@@ -16,10 +16,8 @@ if (process.env.NODE_ENV !== "production") {
   useProvidedXstateInspector = () => null;
 }
 
-export interface ReactNativeInspectorOptions extends InspectorOptions {
-  url?: string;
-  window?: Window;
-  iframe?: HTMLIFrameElement | null;
+interface ReactNativeInspectorOptions extends InspectorOptions {
+  // TODO maybe add some flags here for filtering events? deferred events?
 }
 
 export interface InspectorOptions {
