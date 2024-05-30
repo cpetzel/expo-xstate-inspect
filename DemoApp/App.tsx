@@ -11,16 +11,18 @@ function getNextEvents(snapshot) {
   return [...new Set([...snapshot._nodes.flatMap((sn) => sn.ownEvents)])];
 }
 
-// import { EventTarget, Event } from "event-target-shim";
-// global.EventTarget = EventTarget;
-// global.Event = Event;
-
 export default function App() {
   const inspector = Inspector.useXStateInspector();
-  // todo wait for inspector to be connected
 
+  if (!inspector) {
+    return <Text>Waiting for inspector to connect...</Text>;
+  }
+  return <Demo inspector={inspector} />;
+}
+
+const Demo = ({ inspector }) => {
   const [state, send] = useMachine(DemoMachine, {
-    inspect: inspector?.inspect,
+    inspect: inspector.inspect,
   });
 
   const nextEvents = getNextEvents(state);
@@ -38,7 +40,7 @@ export default function App() {
       <StatusBar style="auto" />
     </View>
   );
-}
+};
 
 const DemoMachine = createMachine({
   /** @xstate-layout N4IgpgJg5mDOIC5QTAWwPYDoCSA7AlgC74CGANgMQDKhJAToQNoAMAuoqAA7qxH7q4OIAB6IAtAEYATAA5MAVikB2AMwAWFUvkAaEAE9ESgGyY1ATiPNjU+TJlKZEowF9nulBkwB1dHQDW+LhQFAAKAlAs7Egg3LzEAkKiCBLyaqZq8irSOvqIMibMUupSzKV2Dk6u7mhYVACuAMYNcLDUtAwA8gBuYHSRQrF8CdFJWXJqSlJG8kY2ugYIYiYSEpPM5mYrUhIyKjJVIB5YPv6BwQCidHS+-dGD8YIjiE4SmCsqstnzz0ZKmEZqZhGfLMFTyFKzeQHI6YABiJHwZDqdDAFAASnB2kw2AMeENHqAkpJtpgzCowWStN8ELI0kZVlI1DJMuCZjZXG4QLh0Ch4NEjri4vwCSJxMoVJhmalgVTcoszFJ-gz1mZNtIdmpoTUcARiORBfjEmKbJL5NL7DkFlpMIzLNZbPZHC5OTCTgEggaHkbFnJFKoNLKrcxTBYrJDyk6tZ56k0Wp7hd6PoqzczKZbDPIbWo7eHHZUXdr4YjkWB48NCYgPnIzGoJIDIdSnH8AUCQWCIeyOUA */
