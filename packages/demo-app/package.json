@@ -9,6 +9,10 @@
     "ios": "expo start --ios",
     "web": "expo start --web"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cpetzel/expo-xstate-inspect.git"
+  },
   "dependencies": {
     "@tamagui/config": "^1.99.1",
     "@xstate/react": "^4.1.1",

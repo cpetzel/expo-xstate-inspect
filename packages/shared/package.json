@@ -7,6 +7,10 @@
   "scripts": {
     "build": "tsc --build"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cpetzel/expo-xstate-inspect.git"
+  },
   "dependencies": {
     "@statelyai/inspect": "^0.3.1",
     "safe-stable-stringify": "^2.4.3"
