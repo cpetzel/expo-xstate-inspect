@@ -23,10 +23,10 @@ export class WebViewAdapter implements ActorAwareAdapter, WebViewAddedListener {
    * The inspector hands us the raw actor ref, and also will hand us the same StatelyActorEvent in the send function below
    */
   handleNewActor(actorRef: AnyActorRef) {
-    console.log(
-      "🚀 ~ WebViewAdapter ~ handleNewActor ~ actorRef:",
-      actorRef.id
-    );
+    // console.log(
+    //   "🚀 ~ WebViewAdapter ~ handleNewActor ~ actorRef:",
+    //   actorRef.id
+    // );
     // always cache every actor ref... so if the inspector view is mounted, unmounted, and mounted again, we can send over all snapshots and definitions
     this.actorMap.set(actorRef.id, actorRef);
   }
@@ -35,27 +35,35 @@ export class WebViewAdapter implements ActorAwareAdapter, WebViewAddedListener {
     webViewRef: RefObject<WebView<{}>>,
     eventEmitter: EventEmitter
   ) {
-    console.log(
-      "🚀 ~ WebViewAdapter ~ onWebViewAdded ~ webViewRef",
-      webViewRef
-    );
+    // console.log(
+    //   "🚀 ~ WebViewAdapter ~ onWebViewAdded ~ webViewRef",
+    //   webViewRef,
+    //   this.actorMap.size
+    // );
 
     this.currentWebViewRef = webViewRef;
     this.currentEventEmitter = eventEmitter;
 
     this.currentEventEmitter.addListener("message", (data: any) => {
-      console.log("🚀 ~ WebViewAdapter ~ event from webviw ~ data:", data);
+      // console.log("🚀 ~ WebViewAdapter ~ event from webviw ~ data:", data);
 
       if (!isEventObject(data)) {
-        console.error(
-          "🚀 ~ WebViewAdapter ~ event from webviw ~ data is not an event object"
-        );
         return;
       }
       // TODO or xstate.inspecting ?
       if (data.type === "@statelyai.connected") {
         // send all actor and snapthos
         this.actorMap.forEach((actorRef) => {
+          const snapshot = actorRef.getSnapshot();
+
+          if (snapshot.status !== "active") {
+            // console.log(
+            //   "🚀 ~ WebViewAdapter ~ onWebViewAdded ~ actor is not active",
+            //   actorRef.id
+            // );
+            return;
+          }
+
           const sessionId =
             typeof actorRef === "string" ? actorRef : actorRef.sessionId;
           const definitionObject = (actorRef as any)?.logic?.config;
@@ -72,7 +80,6 @@ export class WebViewAdapter implements ActorAwareAdapter, WebViewAddedListener {
               : actorRef._parent?.sessionId;
           const name = definitionObject ? definitionObject.id : sessionId;
 
-          const snapshot = actorRef.getSnapshot();
           const actorEvent = {
             type: "@xstate.actor",
             name,
@@ -85,11 +92,6 @@ export class WebViewAdapter implements ActorAwareAdapter, WebViewAddedListener {
             definition,
             snapshot: snapshot ?? { status: "active" },
           } satisfies StatelyActorEvent;
-          console.log(
-            "🚀 ~ WebViewAdapter ~ this.actorMap.forEach ~ SENDING ACTOR:",
-            actorEvent
-          );
-
           this.send(actorEvent);
         });
       }
@@ -109,12 +111,18 @@ export class WebViewAdapter implements ActorAwareAdapter, WebViewAddedListener {
   }
 
   public send(event: StatelyInspectionEvent) {
+    if (
+      this.currentEventEmitter === undefined ||
+      this.currentEventEmitter?.listenerCount("message") < 1
+    ) {
+      return;
+    }
     // console.log("🚀 ~ WebViewAdapter ~ send ~ event:", event);
     if (
       this.currentWebViewRef?.current === null ||
       this.currentWebViewRef?.current === undefined
     ) {
-      console.log("🚀 ~ WebViewAdapter ~ send ~ NO WEB VIEW YET!!!");
+      // console.log("🚀 ~ WebViewAdapter ~ send ~ NO WEB VIEW YET!!!");
       return;
     }
 

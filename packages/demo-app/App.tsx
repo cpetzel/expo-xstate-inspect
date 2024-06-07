@@ -12,10 +12,11 @@ import {
   FloatingInspector,
   useFloatingXStateInspector,
 } from "react-native-xstate-floating-inspect";
-import { useMemo } from "react";
-import { Observer, InspectionEvent } from "xstate";
-
+import { useMemo, useState } from "react";
+import { Inspector } from "@statelyai/inspect/src/types";
 import { combineObservers } from "xstate-floating-inspect-shared";
+import { WebViewAdapter } from "react-native-xstate-floating-inspect/src/WebViewAdapter";
+import { ExpoAdapter } from "expo-xstate-inspect/build/ExpoAdapter";
 const tamaguiConfig = createTamagui(config);
 
 function getNextEvents(snapshot) {
@@ -24,7 +25,7 @@ function getNextEvents(snapshot) {
 
 export default function App() {
   const floatingInspector = useFloatingXStateInspector();
-  const inspector = useXStateInspector({
+  const expoPluginInspector = useXStateInspector({
     autoStart: true,
     /*  filter: (event) => {
       if (event.type === "@xstate.event" && event.event.type === "Start") {
@@ -33,33 +34,46 @@ export default function App() {
       return true;
     }, */
   });
+  const [isFloatingVisible, setIsFloatingVisible] = useState(true);
 
-  const combinedInspectors = useMemo(() => {
-    if (inspector && floatingInspector) {
-      return combineObservers([inspector.inspect, floatingInspector.inspect]);
-    }
-  }, [inspector, floatingInspector]);
-
-  if (!inspector) {
-    return <Text>Waiting for inspector to connect...</Text>;
+  if (!expoPluginInspector) {
+    return <Text>Waiting for expo plugin inspector to connect...</Text>;
   }
   return (
-    <GestureHandlerRootView style={{ flex: 1, width: "100%", height: "100%" }}>
+    <GestureHandlerRootView>
       <TamaguiProvider config={tamaguiConfig}>
-        <Demo combinedInspectors={combinedInspectors} />
-        <FloatingInspector />
+        <Demo
+          floatingInspector={floatingInspector}
+          expoPluginInspector={expoPluginInspector}
+          isFloatingVisible={isFloatingVisible}
+          setIsFloatingVisible={setIsFloatingVisible}
+        />
+        {isFloatingVisible && (
+          <FloatingInspector onClosePress={() => setIsFloatingVisible(false)} />
+        )}
       </TamaguiProvider>
     </GestureHandlerRootView>
   );
 }
 
 const Demo = ({
-  combinedInspectors,
+  floatingInspector,
+  expoPluginInspector,
+  isFloatingVisible,
+  setIsFloatingVisible,
 }: {
-  combinedInspectors: Observer<InspectionEvent>;
+  floatingInspector: Inspector<WebViewAdapter>;
+  expoPluginInspector: Inspector<ExpoAdapter>;
+  isFloatingVisible: boolean;
+  setIsFloatingVisible: (visible: boolean) => void;
 }) => {
+  const inspectors = [expoPluginInspector, floatingInspector];
+  const combinedInspectors = useMemo(() => {
+    return combineObservers(inspectors);
+  }, [expoPluginInspector, floatingInspector]);
+
   const [state, send] = useMachine(DemoMachine, {
-    inspect: combinedInspectors.next,
+    inspect: combinedInspectors,
   });
 
   const nextEvents = getNextEvents(state);
@@ -79,9 +93,18 @@ const Demo = ({
           marginTop: 40,
         }}
       >
-        <Button onPress={() => inspector.start()}>Start Inspector</Button>
-        <Button onPress={() => inspector.stop()}>Stop Inspector</Button>
+        <Button onPress={() => inspectors.forEach((i) => i.start())}>
+          Start All Inspectors
+        </Button>
+        <Button onPress={() => inspectors.forEach((i) => i.stop())}>
+          Stop All Inspectors
+        </Button>
       </View>
+      {!isFloatingVisible && (
+        <Button onPress={() => setIsFloatingVisible(true)}>
+          Show Floating Inspector
+        </Button>
+      )}
       <StatusBar style="auto" />
     </View>
   );
@@ -144,6 +167,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     gap: 10,
+    width: "100%",
+    height: "100%",
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",

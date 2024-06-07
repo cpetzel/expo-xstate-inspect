@@ -1,12 +1,21 @@
 import React, { useMemo, useRef } from "react";
-import { StyleSheet, View } from "react-native";
 import DragView from "./DragResizeView";
 import { XStateDebuggerWebView } from "./XStateDebuggerWebView";
 
-export function FloatingInspector() {
+interface Props {
+  onClosePress: () => void;
+}
+
+export function FloatingInspector({ onClosePress }: Props) {
   return (
-    <DragView height={200} width={200} x={0} y={200}>
-      <XStateDebuggerWebView onClosePress={() => console.log("close")} />
+    <DragView
+      height={200}
+      width={200}
+      x={20}
+      y={200}
+      onClosePress={onClosePress}
+    >
+      <XStateDebuggerWebView />
     </DragView>
   );
 }

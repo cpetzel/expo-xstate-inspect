@@ -30,7 +30,6 @@ export function createActorAwareInspector<TAdapter extends ActorAwareAdapter>(
   // override their inspect method to catch the actorRef
   statelyInspector.inspect = {
     next: (event) => {
-      const { actorRef } = event;
       idleCallback(function inspectNext() {
         const convertedEvent = convertXStateEvent(event);
         if (event.type === "@xstate.actor") {

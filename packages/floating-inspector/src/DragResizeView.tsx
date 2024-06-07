@@ -1,5 +1,9 @@
 import React, { ReactNode, useEffect, useMemo, useRef } from "react";
-import { ImageSourcePropType, StyleSheet } from "react-native";
+import {
+  ImageSourcePropType,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
@@ -21,6 +25,7 @@ export type Props = {
   width: number;
   height: number;
   children: ReactNode;
+  onClosePress: () => void;
 };
 
 export type OnAnimationEnd = {
@@ -45,6 +50,7 @@ export type DragProps = {
   resizable?: boolean;
   draggable?: boolean;
   resizerImageSource?: ImageSourcePropType;
+  onClosePress: () => void;
 };
 
 function DragView(props: Props) {
@@ -57,6 +63,7 @@ function DragView(props: Props) {
   return (
     // @ts-ignore
     <DragAndResizeView
+      onClosePress={props.onClosePress}
       height={heightShared.value}
       width={widthShared.value}
       x={xShared.value}
@@ -92,6 +99,7 @@ function DragAndResizeView(props: DragProps) {
     children,
     resizable = true,
     draggable = true,
+    onClosePress,
   } = props;
 
   const xRef = useRef(x);
@@ -241,9 +249,11 @@ function DragAndResizeView(props: DragProps) {
           </Animated.View>
         </GestureDetector>
         {children}
-        <Animated.View style={animatedCloseButtonStyle}>
-          <CloseIcon />
-        </Animated.View>
+        <TouchableOpacity onPress={onClosePress}>
+          <Animated.View style={animatedCloseButtonStyle}>
+            <CloseIcon />
+          </Animated.View>
+        </TouchableOpacity>
       </Animated.View>
     </GestureDetector>
   );

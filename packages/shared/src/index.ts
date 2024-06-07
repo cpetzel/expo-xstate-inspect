@@ -1,4 +1,8 @@
-import { StatelyInspectionEvent, Adapter } from "@statelyai/inspect/src/types";
+import {
+  StatelyInspectionEvent,
+  Adapter,
+  Inspector,
+} from "@statelyai/inspect/src/types";
 import { AnyActorRef, Observer, InspectionEvent } from "xstate";
 
 export { createActorAwareInspector } from "./createInspector";
@@ -51,18 +55,21 @@ export function getRootId(
   return rootActorRef ?? undefined;
 }
 
+/**
+ * Combines multiple inspectors into one
+ */
 export function combineObservers(
-  observers: Array<Observer<InspectionEvent>>
+  inspectors: Array<Inspector<any>>
 ): Observer<InspectionEvent> {
   return {
     next: (value: InspectionEvent) => {
-      observers.forEach((observer) => observer.next(value));
+      inspectors.forEach((i) => i.inspect.next(value));
     },
     error: (err: any) => {
-      observers.forEach((observer) => observer.error(err));
+      inspectors.forEach((i) => i.inspect.error(err));
     },
     complete: () => {
-      observers.forEach((observer) => observer.complete());
+      inspectors.forEach((i) => i.inspect.complete());
     },
   };
 }

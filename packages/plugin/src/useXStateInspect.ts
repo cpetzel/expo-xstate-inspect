@@ -25,8 +25,6 @@ export function useXStateInspector(
         ...options,
       } as Required<InspectorOptions>;
 
-      // better yet, I could write my own Inspector... this way, I could get references to all of the actors, and then get their definitions and snapshots only when needed!!
-
       const inspector = createActorAwareInspector(
         new ExpoAdapter(client),
         resolvedOptions

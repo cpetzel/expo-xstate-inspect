@@ -78,6 +78,12 @@ export const inspectMachine = setup({
     sendActors: ({ context }) => {
       // send all actors
       context.actors.forEach((actorRef) => {
+        const snapshot = actorRef.getSnapshot();
+
+        if (snapshot.status !== "active") {
+          return;
+        }
+
         const sessionId =
           typeof actorRef === "string" ? actorRef : actorRef.sessionId;
         const definitionObject = (actorRef as any)?.logic?.config;
@@ -94,7 +100,6 @@ export const inspectMachine = setup({
             : actorRef._parent?.sessionId;
         const name = definitionObject ? definitionObject.id : sessionId;
 
-        const snapshot = actorRef.getSnapshot();
         const actorEvent = {
           type: "@xstate.actor",
           name,
@@ -111,7 +116,7 @@ export const inspectMachine = setup({
         //   "🚀 ~ WebViewAdapter ~ this.actorMap.forEach ~ SENDING ACTOR:",
         //   actorEvent
         // );
-        context.client.sendMessage("event", event);
+        context.client.sendMessage("event", actorEvent);
       });
     },
     sendEventToInspector: ({ context, event }) => {

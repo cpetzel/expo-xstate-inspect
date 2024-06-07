@@ -49,7 +49,7 @@ interface Props {
 }
 
 // TODO support the old inspector?
-export const XStateDebuggerWebView = ({ onClosePress }: Props) => {
+export const XStateDebuggerWebView = () => {
   const ref = useRef<WebView>(null);
 
   const eventEmitter = useMemo(() => new EventEmitter(), []);
