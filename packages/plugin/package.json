@@ -1,6 +1,6 @@
 {
   "name": "expo-xstate-inspect",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Inspect your xstate machines",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -31,7 +31,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "xstate-floating-inspect-shared": "*",
+    "react-native-xstate-inspect-shared": "1.0.0",
     "xstate": "^5.13.0"
   },
   "devDependencies": {

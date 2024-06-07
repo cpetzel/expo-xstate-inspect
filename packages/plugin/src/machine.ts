@@ -14,7 +14,7 @@ import {
   stateIn,
 } from "xstate";
 import safeStringify from "safe-stable-stringify";
-import { getRootId } from "xstate-floating-inspect-shared";
+import { getRootId } from "react-native-xstate-inspect-shared";
 
 export const inspectMachine = setup({
   types: {

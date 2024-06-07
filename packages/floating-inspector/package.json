@@ -1,6 +1,6 @@
 {
   "name": "react-native-xstate-floating-inspect",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "xstate inspector in a floating window",
   "main": "src/index.ts",
   "author": "cpetzel",
@@ -27,7 +27,7 @@
     "react-native-webview": "^13.0.0"
   },
   "dependencies": {
-    "xstate-floating-inspect-shared": "*",
+    "react-native-xstate-inspect-shared": "*",
     "react": "18.2.0",
     "react-native": "^0.74.1",
     "react-native-gesture-handler": "^2.16.2",

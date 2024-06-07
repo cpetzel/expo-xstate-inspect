@@ -8,7 +8,7 @@ import {
   ActorAwareAdapter,
   getRootId,
   isEventObject,
-} from "xstate-floating-inspect-shared";
+} from "react-native-xstate-inspect-shared";
 import EventEmitter from "react-native/Libraries/vendor/emitter/EventEmitter";
 import safeStringify from "safe-stable-stringify";
 

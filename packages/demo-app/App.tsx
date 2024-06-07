@@ -14,7 +14,7 @@ import {
 } from "react-native-xstate-floating-inspect";
 import { useMemo, useState } from "react";
 import { Inspector } from "@statelyai/inspect/src/types";
-import { combineObservers } from "xstate-floating-inspect-shared";
+import { combineObservers } from "react-native-xstate-inspect-shared";
 import { WebViewAdapter } from "react-native-xstate-floating-inspect/src/WebViewAdapter";
 import { ExpoAdapter } from "expo-xstate-inspect/build/ExpoAdapter";
 const tamaguiConfig = createTamagui(config);

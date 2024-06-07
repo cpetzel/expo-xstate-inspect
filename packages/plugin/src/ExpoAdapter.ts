@@ -2,7 +2,7 @@ import { StatelyInspectionEvent } from "@statelyai/inspect";
 import { DevToolsPluginClient } from "expo/devtools";
 import { ActorRefFrom, AnyActorRef, createActor } from "xstate";
 import { inspectMachine } from "./machine";
-import { ActorAwareAdapter } from "xstate-floating-inspect-shared";
+import { ActorAwareAdapter } from "react-native-xstate-inspect-shared";
 
 export class ExpoAdapter implements ActorAwareAdapter {
   private inspector: ActorRefFrom<typeof inspectMachine>;

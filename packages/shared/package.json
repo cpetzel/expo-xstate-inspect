@@ -1,5 +1,5 @@
 {
-  "name": "xstate-floating-inspect-shared",
+  "name": "react-native-xstate-inspect-shared",
   "version": "1.0.0",
   "main": "dist/index.js",
   "author": "cpetzel",

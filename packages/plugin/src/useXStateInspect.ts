@@ -7,7 +7,7 @@ import { Inspector as XStateInspector } from "@statelyai/inspect/src/types";
 import {
   InspectorOptions,
   createActorAwareInspector,
-} from "xstate-floating-inspect-shared";
+} from "react-native-xstate-inspect-shared";
 export type Inspector = XStateInspector<ExpoAdapter>;
 
 export function useXStateInspector(
