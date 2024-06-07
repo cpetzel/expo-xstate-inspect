@@ -1,0 +1,14 @@
+{
+  "name": "xstate-floating-inspect-shared",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "author": "cpetzel",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "dependencies": {
+    "@statelyai/inspect": "^0.3.1",
+    "safe-stable-stringify": "^2.4.3"
+  }
+}

@@ -1,4 +1,4 @@
-import { StatelyInspectionEvent } from "@statelyai/inspect/src/types";
+import { InspectorOptions } from "xstate-floating-inspect-shared";
 
 export let useXStateInspector: typeof import("./useXStateInspect").useXStateInspector;
 export let XStateInspectorProvider: typeof import("./context").XStateInspectorProvider;
@@ -18,15 +18,4 @@ if (process.env.NODE_ENV !== "production") {
 
 interface ReactNativeInspectorOptions extends InspectorOptions {
   // TODO maybe add some flags here for filtering events? deferred events?
-}
-
-export interface InspectorOptions {
-  filter?: (event: StatelyInspectionEvent) => boolean;
-  serialize?: (event: StatelyInspectionEvent) => StatelyInspectionEvent;
-  /**
-   * Whether to automatically start the inspector.
-   *
-   * @default true
-   */
-  autoStart?: boolean;
 }

@@ -1,18 +1,10 @@
 import { StatelyInspectionEvent } from "@statelyai/inspect";
-import { Adapter } from "@statelyai/inspect/src/types";
 import { DevToolsPluginClient } from "expo/devtools";
-import { ActorRefFrom, createActor } from "xstate";
+import { ActorRefFrom, AnyActorRef, createActor } from "xstate";
 import { inspectMachine } from "./machine";
+import { ActorAwareAdapter } from "xstate-floating-inspect-shared";
 
-export function isEventObject(event: unknown) /*:  event is AnyEventObject */ {
-  return (
-    typeof event === "object" &&
-    event !== null &&
-    typeof (event as any).type === "string"
-  );
-}
-
-export class ExpoAdapter implements Adapter {
+export class ExpoAdapter implements ActorAwareAdapter {
   private inspector: ActorRefFrom<typeof inspectMachine>;
 
   constructor(client: DevToolsPluginClient) {
@@ -21,10 +13,13 @@ export class ExpoAdapter implements Adapter {
         client,
       },
     }).start();
+  }
 
-    /*  this.inspector.subscribe((state) => {
-      console.log("🚀 ~ ExpoAdapter ~ state::: ", JSON.stringify(state.value));
-    }); */
+  handleNewActor(actorRef: AnyActorRef) {
+    this.inspector.send({
+      type: "NewActor",
+      actorRef,
+    });
   }
 
   public start() {
@@ -38,6 +33,8 @@ export class ExpoAdapter implements Adapter {
   }
 
   public send(event: StatelyInspectionEvent) {
+    // what if, instead of deferring events, I can reach into the system to get all of the actors, and send over their definition and latest snapshot???
+
     this.inspector.send({
       type: "InspectorEvent",
       event,

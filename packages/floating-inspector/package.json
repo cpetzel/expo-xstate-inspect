@@ -1,0 +1,37 @@
+{
+  "name": "react-native-xstate-floating-inspect",
+  "version": "0.0.1",
+  "description": "xstate inspector in a floating window",
+  "main": "src/index.ts",
+  "author": "cpetzel",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "react native",
+    "xstate"
+  ],
+  "files": [
+    "dist",
+    "src"
+  ],
+  "peerDependencies": {
+    "react": "*",
+    "react-native": ">=0.74.0",
+    "react-native-gesture-handler": "^2.16.2",
+    "react-native-reanimated": "^3.0.0",
+    "react-native-webview": "^13.0.0"
+  },
+  "dependencies": {
+    "xstate-floating-inspect-shared": "*",
+    "react": "18.2.0",
+    "react-native": "^0.74.1",
+    "react-native-gesture-handler": "^2.16.2",
+    "react-native-reanimated": "~3.10.1",
+    "react-native-webview": "^13.10.2"
+  }
+}

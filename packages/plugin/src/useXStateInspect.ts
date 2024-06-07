@@ -1,11 +1,13 @@
-import { createInspector } from "@statelyai/inspect";
 import { useDevToolsPluginClient } from "expo/devtools";
 import { useMemo } from "react";
 import { ExpoAdapter } from "./ExpoAdapter";
 import safeStringify from "fast-safe-stringify";
 
 import { Inspector as XStateInspector } from "@statelyai/inspect/src/types";
-import { InspectorOptions } from ".";
+import {
+  InspectorOptions,
+  createActorAwareInspector,
+} from "xstate-floating-inspect-shared";
 export type Inspector = XStateInspector<ExpoAdapter>;
 
 export function useXStateInspector(
@@ -22,7 +24,10 @@ export function useXStateInspector(
         autoStart: true,
         ...options,
       } as Required<InspectorOptions>;
-      const inspector = createInspector(
+
+      // better yet, I could write my own Inspector... this way, I could get references to all of the actors, and then get their definitions and snapshots only when needed!!
+
+      const inspector = createActorAwareInspector(
         new ExpoAdapter(client),
         resolvedOptions
       );

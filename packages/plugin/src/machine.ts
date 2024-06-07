@@ -2,8 +2,19 @@ import {
   StatelyActorEvent,
   StatelyInspectionEvent,
 } from "@statelyai/inspect/src/types";
+import pkg from "@statelyai/inspect/package.json";
+
 import { DevToolsPluginClient } from "expo/devtools";
-import { assertEvent, assign, fromCallback, setup, stateIn } from "xstate";
+import {
+  AnyActorRef,
+  assertEvent,
+  assign,
+  fromCallback,
+  setup,
+  stateIn,
+} from "xstate";
+import safeStringify from "safe-stable-stringify";
+import { getRootId } from "xstate-floating-inspect-shared";
 
 export const inspectMachine = setup({
   types: {
@@ -12,6 +23,7 @@ export const inspectMachine = setup({
     },
     context: {} as {
       actorEvents: StatelyActorEvent[];
+      actors: AnyActorRef[];
       snapshotsMap: Map<string, StatelyInspectionEvent>;
       client: DevToolsPluginClient;
     },
@@ -19,6 +31,10 @@ export const inspectMachine = setup({
       | {
           type: "InspectorEvent";
           event: StatelyInspectionEvent;
+        }
+      | {
+          type: "NewActor";
+          actorRef: AnyActorRef;
         }
       | { type: "InspectorConnected" }
       | { type: "Start" }
@@ -52,12 +68,49 @@ export const inspectMachine = setup({
         snapshotsMap,
       };
     }),
-    sendDeferredEvents: ({ context }) => {
-      context.actorEvents.forEach((event) => {
-        context.client.sendMessage("event", event);
-      });
+    assignNewActor: assign(({ context, event }) => {
+      assertEvent(event, "NewActor");
 
-      context.snapshotsMap.forEach((event) => {
+      return {
+        actors: [...context.actors, event.actorRef],
+      };
+    }),
+    sendActors: ({ context }) => {
+      // send all actors
+      context.actors.forEach((actorRef) => {
+        const sessionId =
+          typeof actorRef === "string" ? actorRef : actorRef.sessionId;
+        const definitionObject = (actorRef as any)?.logic?.config;
+        const definition = definitionObject
+          ? safeStringify(definitionObject)
+          : undefined;
+        const rootId =
+          /*  info?.rootId ?? */ typeof actorRef === "string"
+            ? undefined
+            : getRootId(actorRef);
+        const parentId =
+          /*  info?.parentId ??  */ typeof actorRef === "string"
+            ? undefined
+            : actorRef._parent?.sessionId;
+        const name = definitionObject ? definitionObject.id : sessionId;
+
+        const snapshot = actorRef.getSnapshot();
+        const actorEvent = {
+          type: "@xstate.actor",
+          name,
+          sessionId,
+          createdAt: Date.now().toString(),
+          _version: pkg.version,
+          rootId,
+          parentId,
+          id: null as any,
+          definition,
+          snapshot: snapshot ?? { status: "active" },
+        } satisfies StatelyActorEvent;
+        // console.log(
+        //   "🚀 ~ WebViewAdapter ~ this.actorMap.forEach ~ SENDING ACTOR:",
+        //   actorEvent
+        // );
         context.client.sendMessage("event", event);
       });
     },
@@ -80,35 +133,33 @@ export const inspectMachine = setup({
     client: input.client,
     isConnected: false,
     actorEvents: [],
+    actors: [],
     snapshotsMap: new Map(),
   }),
+
+  on: {
+    NewActor: {
+      actions: ["assignNewActor"],
+    },
+  },
 
   states: {
     Connection: {
       states: {
-        NotConnected: {
-          on: {
-            InspectorEvent: {
-              actions: ["assignNewEvent"],
-            },
-          },
-        },
+        NotConnected: {},
 
         Connected: {
           on: {
             InspectorEvent: [
               {
                 guard: "isRunning",
-                actions: ["assignNewEvent", "sendEventToInspector"],
-              },
-              {
-                actions: ["assignNewEvent"],
+                actions: ["sendEventToInspector"],
               },
             ],
 
             Start: {
               target: "Connected",
-              actions: "sendDeferredEvents",
+              actions: "sendActors",
             },
           },
         },
@@ -119,7 +170,7 @@ export const inspectMachine = setup({
       on: {
         InspectorConnected: {
           target: ".Connected",
-          actions: "sendDeferredEvents",
+          actions: "sendActors",
         },
       },
     },

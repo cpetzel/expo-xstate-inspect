@@ -1,17 +1,29 @@
 import "partysocket/event-target-polyfill";
 
 import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { createMachine, fromPromise } from "xstate";
 import { useMachine } from "@xstate/react";
 import { useXStateInspector } from "expo-xstate-inspect";
-import { Inspector } from "expo-xstate-inspect/build/useXStateInspect";
+import { TamaguiProvider, createTamagui, View, Button } from "tamagui";
+import { config } from "@tamagui/config/v3";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  FloatingInspector,
+  useFloatingXStateInspector,
+} from "react-native-xstate-floating-inspect";
+import { useMemo } from "react";
+import { Observer, InspectionEvent } from "xstate";
+
+import { combineObservers } from "xstate-floating-inspect-shared";
+const tamaguiConfig = createTamagui(config);
 
 function getNextEvents(snapshot) {
   return [...new Set([...snapshot._nodes.flatMap((sn) => sn.ownEvents)])];
 }
 
 export default function App() {
+  const floatingInspector = useFloatingXStateInspector();
   const inspector = useXStateInspector({
     autoStart: true,
     /*  filter: (event) => {
@@ -22,15 +34,32 @@ export default function App() {
     }, */
   });
 
+  const combinedInspectors = useMemo(() => {
+    if (inspector && floatingInspector) {
+      return combineObservers([inspector.inspect, floatingInspector.inspect]);
+    }
+  }, [inspector, floatingInspector]);
+
   if (!inspector) {
     return <Text>Waiting for inspector to connect...</Text>;
   }
-  return <Demo inspector={inspector} />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1, width: "100%", height: "100%" }}>
+      <TamaguiProvider config={tamaguiConfig}>
+        <Demo combinedInspectors={combinedInspectors} />
+        <FloatingInspector />
+      </TamaguiProvider>
+    </GestureHandlerRootView>
+  );
 }
 
-const Demo = ({ inspector }: { inspector: Inspector }) => {
+const Demo = ({
+  combinedInspectors,
+}: {
+  combinedInspectors: Observer<InspectionEvent>;
+}) => {
   const [state, send] = useMachine(DemoMachine, {
-    inspect: inspector.inspect,
+    inspect: combinedInspectors.next,
   });
 
   const nextEvents = getNextEvents(state);
@@ -39,22 +68,19 @@ const Demo = ({ inspector }: { inspector: Inspector }) => {
     <View style={styles.container}>
       <Text>Current State: {JSON.stringify(state.value)}</Text>
       {nextEvents.map((event) => (
-        <Button
-          key={event}
-          title={event}
-          onPress={() => send({ type: event })}
-        />
+        <Button key={event} onPress={() => send({ type: event })}>
+          {event}
+        </Button>
       ))}
       <View
         style={{
           flexDirection: "row",
-          backgroundColor: "#040404",
           gap: 10,
           marginTop: 40,
         }}
       >
-        <Button title="Start Inspector" onPress={() => inspector.start()} />
-        <Button title="Stop Inspector" onPress={() => inspector.stop()} />
+        <Button onPress={() => inspector.start()}>Start Inspector</Button>
+        <Button onPress={() => inspector.stop()}>Stop Inspector</Button>
       </View>
       <StatusBar style="auto" />
     </View>
@@ -117,8 +143,16 @@ const DemoMachine = createMachine({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    gap: 10,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
 });
+
+// make TypeScript type everything based on your config
+type Conf = typeof tamaguiConfig;
+declare module "@tamagui/core" {
+  // or 'tamagui'
+  interface TamaguiCustomConfig extends Conf {}
+}

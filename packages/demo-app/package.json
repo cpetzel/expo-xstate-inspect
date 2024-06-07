@@ -1,7 +1,7 @@
 {
   "name": "demoapp",
   "version": "1.0.0",
-  "main": "expo/AppEntry.js",
+  "main": "index.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,16 +9,22 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@tamagui/config": "^1.99.1",
     "@xstate/react": "^4.1.1",
     "event-target-shim": "^6.0.2",
     "expo": "~51.0.9",
     "expo-status-bar": "~1.12.1",
+    "xstate-floating-inspect-shared": "*",
     "expo-xstate-inspect": "*",
+    "react-native-xstate-floating-inspect": "*",
     "react": "18.2.0",
-    "react-native": "0.74.1"
+    "react-native": "0.74.1",
+    "tamagui": "^1.99.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@tamagui/babel-plugin": "^1.99.1",
+    "babel-preset-fbjs": "^3.4.0"
   },
   "private": true
 }
