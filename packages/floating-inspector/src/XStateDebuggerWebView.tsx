@@ -44,10 +44,6 @@ const PRELOAD_INJECTED_JAVASCRIPT = `(function() {
     console.log('attaching message event listener from webview to RN')
 })();`;
 
-interface Props {
-  onClosePress: () => void;
-}
-
 // TODO support the old inspector?
 export const XStateDebuggerWebView = () => {
   const ref = useRef<WebView>(null);
@@ -89,7 +85,7 @@ export const XStateDebuggerWebView = () => {
         automaticallyAdjustContentInsets={false}
         scalesPageToFit={false}
         bounces={false}
-        source={{ uri: "https://stately.ai/inspect" }} //
+        source={{ uri: "https://stately.ai/inspect" }}
         injectedJavaScriptBeforeContentLoaded={PRELOAD_INJECTED_JAVASCRIPT}
         injectedJavaScript={INJECTED_JAVASCRIPT}
         onMessage={onMessage}

@@ -6,7 +6,6 @@ import {
   convertXStateEvent,
   createInspector,
 } from "@statelyai/inspect/src/createInspector";
-// import pkg from "@statelyai/inspect/package.json";
 import { InspectionEvent, Observer } from "xstate";
 
 export function createActorAwareInspector<TAdapter extends ActorAwareAdapter>(

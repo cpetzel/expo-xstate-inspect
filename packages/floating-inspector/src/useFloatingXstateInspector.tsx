@@ -1,4 +1,3 @@
-import { createInspector } from "@statelyai/inspect";
 import { useMemo } from "react";
 import safeStringify from "fast-safe-stringify";
 
