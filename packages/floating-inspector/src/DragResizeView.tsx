@@ -174,7 +174,6 @@ function DragAndResizeView(props: DragProps) {
       );
     })
     .onEnd(() => {
-      "worklet";
       tempBoxHeight.value = boxHeight.value;
       tempBoxWidth.value = boxWidth.value;
 
