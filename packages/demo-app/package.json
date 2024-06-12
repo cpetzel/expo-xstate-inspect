@@ -19,12 +19,12 @@
     "event-target-shim": "^6.0.2",
     "expo": "~51.0.11",
     "expo-status-bar": "~1.12.1",
-    "expo-xstate-inspect": "^1.0.0",
+    "expo-xstate-inspect": "*",
     "react": "18.2.0",
     "react-native": "0.74.1",
-    "react-native-xstate-floating-inspect": "^1.0.0",
+    "react-native-xstate-floating-inspect": "*",
     "tamagui": "^1.99.1",
-    "react-native-xstate-inspect-shared": "^1.0.0"
+    "react-native-xstate-inspect-shared": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

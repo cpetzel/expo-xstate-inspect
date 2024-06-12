@@ -1,15 +1,19 @@
 {
   "name": "react-native-xstate-inspect-shared",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "author": "cpetzel",
   "license": "MIT",
   "scripts": {
     "build": "tsc --build"
   },
+  "files": [
+    "dist",
+    "src"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/cpetzel/expo-xstate-inspect.git"
+    "url": "git+https://github.com/cpetzel/expo-xstate-inspect.git"
   },
   "dependencies": {
     "@statelyai/inspect": "^0.3.1",
