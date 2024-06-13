@@ -4,7 +4,11 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text } from "react-native";
 import { createMachine, fromPromise } from "xstate";
 import { useMachine } from "@xstate/react";
-import { useXStateInspectorDevTool } from "expo-xstate-inspect";
+import {
+  useProvidedXstateInspectorDevTool,
+  useXStateInspectorDevTool,
+  XStateInspectorDevToolProvider,
+} from "expo-xstate-inspect";
 import { TamaguiProvider, createTamagui, View, Button } from "tamagui";
 import { config } from "@tamagui/config/v3";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -12,6 +16,8 @@ import {
   FloatingInspector,
   TFloatingInspector,
   useFloatingXStateInspector,
+  FloatingXStateInspectorProvider,
+  useProvidedXstateFloatingInspector,
 } from "react-native-xstate-floating-inspect";
 import { useMemo, useState } from "react";
 import { combineObservers } from "react-native-xstate-inspect-shared";
@@ -22,7 +28,20 @@ function getNextEvents(snapshot) {
   return [...new Set([...snapshot._nodes.flatMap((sn) => sn.ownEvents)])];
 }
 
+/** Toggle this boolean to render demo app using context providers */
+const useContextProviders = true;
+
 export default function App() {
+  return (
+    <GestureHandlerRootView>
+      <TamaguiProvider config={tamaguiConfig}>
+        {useContextProviders ? <AppUsingProvider /> : <AppUsingHooks />}
+      </TamaguiProvider>
+    </GestureHandlerRootView>
+  );
+}
+
+const AppUsingHooks = () => {
   const floatingInspector = useFloatingXStateInspector();
   const expoPluginInspector = useXStateInspectorDevTool({
     autoStart: true,
@@ -36,19 +55,49 @@ export default function App() {
   const [isFloatingVisible, setIsFloatingVisible] = useState(true);
 
   return (
-    <GestureHandlerRootView>
-      <TamaguiProvider config={tamaguiConfig}>
+    <View style={styles.container}>
+      <FloatingXStateInspectorProvider>
         <Demo
           floatingInspector={floatingInspector}
           expoPluginInspector={expoPluginInspector}
           isFloatingVisible={isFloatingVisible}
           setIsFloatingVisible={setIsFloatingVisible}
         />
-        {isFloatingVisible && (
-          <FloatingInspector onClosePress={() => setIsFloatingVisible(false)} />
-        )}
-      </TamaguiProvider>
-    </GestureHandlerRootView>
+      </FloatingXStateInspectorProvider>
+      {isFloatingVisible && (
+        <FloatingInspector onClosePress={() => setIsFloatingVisible(false)} />
+      )}
+    </View>
+  );
+};
+
+const ProvidedDemo = () => {
+  const floatingInspector = useProvidedXstateFloatingInspector();
+  const expoPluginInspector = useProvidedXstateInspectorDevTool();
+  const [isFloatingVisible, setIsFloatingVisible] = useState(true);
+
+  return (
+    <View style={styles.container}>
+      <Demo
+        floatingInspector={floatingInspector}
+        expoPluginInspector={expoPluginInspector}
+        isFloatingVisible={isFloatingVisible}
+        setIsFloatingVisible={setIsFloatingVisible}
+      />
+      {isFloatingVisible && (
+        <FloatingInspector onClosePress={() => setIsFloatingVisible(false)} />
+      )}
+    </View>
+  );
+};
+
+function AppUsingProvider() {
+  return (
+    <FloatingXStateInspectorProvider>
+      <XStateInspectorDevToolProvider>
+        <ProvidedDemo />
+      </XStateInspectorDevToolProvider>
+    </FloatingXStateInspectorProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React from "react";
 import DragView from "./DragResizeView";
 import { XStateDebuggerWebView } from "./XStateDebuggerWebView";
 
@@ -9,10 +9,10 @@ interface Props {
 export function FloatingInspector({ onClosePress }: Props) {
   return (
     <DragView
-      height={200}
-      width={200}
+      height={300}
+      width={400}
       x={20}
-      y={200}
+      y={50}
       onClosePress={onClosePress}
     >
       <XStateDebuggerWebView />
