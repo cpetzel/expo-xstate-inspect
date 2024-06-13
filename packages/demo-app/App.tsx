@@ -4,19 +4,18 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text } from "react-native";
 import { createMachine, fromPromise } from "xstate";
 import { useMachine } from "@xstate/react";
-import { useXStateInspector } from "expo-xstate-inspect";
+import { useXStateInspectorDevTool } from "expo-xstate-inspect";
 import { TamaguiProvider, createTamagui, View, Button } from "tamagui";
 import { config } from "@tamagui/config/v3";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   FloatingInspector,
+  TFloatingInspector,
   useFloatingXStateInspector,
 } from "react-native-xstate-floating-inspect";
 import { useMemo, useState } from "react";
-import { Inspector } from "@statelyai/inspect/src/types";
 import { combineObservers } from "react-native-xstate-inspect-shared";
-import { WebViewAdapter } from "react-native-xstate-floating-inspect/src/WebViewAdapter";
-import { ExpoAdapter } from "expo-xstate-inspect/build/ExpoAdapter";
+import type { DevPluginInspector } from "expo-xstate-inspect";
 const tamaguiConfig = createTamagui(config);
 
 function getNextEvents(snapshot) {
@@ -25,7 +24,7 @@ function getNextEvents(snapshot) {
 
 export default function App() {
   const floatingInspector = useFloatingXStateInspector();
-  const expoPluginInspector = useXStateInspector({
+  const expoPluginInspector = useXStateInspectorDevTool({
     autoStart: true,
     /*  filter: (event) => {
       if (event.type === "@xstate.event" && event.event.type === "Start") {
@@ -36,9 +35,6 @@ export default function App() {
   });
   const [isFloatingVisible, setIsFloatingVisible] = useState(true);
 
-  if (!expoPluginInspector) {
-    return <Text>Waiting for expo plugin inspector to connect...</Text>;
-  }
   return (
     <GestureHandlerRootView>
       <TamaguiProvider config={tamaguiConfig}>
@@ -62,8 +58,8 @@ const Demo = ({
   isFloatingVisible,
   setIsFloatingVisible,
 }: {
-  floatingInspector: Inspector<WebViewAdapter>;
-  expoPluginInspector: Inspector<ExpoAdapter>;
+  floatingInspector: TFloatingInspector;
+  expoPluginInspector: DevPluginInspector;
   isFloatingVisible: boolean;
   setIsFloatingVisible: (visible: boolean) => void;
 }) => {

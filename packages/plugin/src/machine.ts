@@ -4,12 +4,16 @@ import {
 } from "@statelyai/inspect/src/types";
 import pkg from "@statelyai/inspect/package.json";
 
-import { DevToolsPluginClient } from "expo/devtools";
+import {
+  DevToolsPluginClient,
+  getDevToolsPluginClientAsync,
+} from "expo/devtools";
 import {
   AnyActorRef,
   assertEvent,
   assign,
   fromCallback,
+  fromPromise,
   setup,
   stateIn,
 } from "xstate";
@@ -18,14 +22,11 @@ import { getRootId } from "react-native-xstate-inspect-shared";
 
 export const inspectMachine = setup({
   types: {
-    input: {} as {
-      client: DevToolsPluginClient;
-    },
     context: {} as {
       actorEvents: StatelyActorEvent[];
       actors: AnyActorRef[];
       snapshotsMap: Map<string, StatelyInspectionEvent>;
-      client: DevToolsPluginClient;
+      client?: DevToolsPluginClient;
     },
     events: {} as
       | {
@@ -36,18 +37,49 @@ export const inspectMachine = setup({
           type: "NewActor";
           actorRef: AnyActorRef;
         }
+      | { type: "MetroSocketDisconnected" }
       | { type: "InspectorConnected" }
       | { type: "Start" }
       | { type: "Stop" },
   },
   actors: {
-    listenForConnections: fromCallback<any, { client: DevToolsPluginClient }>(
+    clientMessages: fromCallback<any, { client: DevToolsPluginClient }>(
       ({ sendBack, input }) => {
-        input.client.addMessageListener("@stately.connected", (data) => {
-          sendBack({ type: "InspectorConnected" });
-        });
+        // console.log(
+        //   "🚀 ~ clientMessages - listening for web inspect events, and socket events"
+        // );
+        const sub = input.client.addMessageListener(
+          "@stately.connected",
+          () => {
+            sendBack({ type: "InspectorConnected" });
+          }
+        );
 
-        return () => {};
+        const onClose = () => {
+          // console.log("🚀 ~ clientMessages ~ socket closed! ");
+          sendBack({ type: "MetroSocketDisconnected" });
+        };
+
+        input.client
+          .getWebSocketBackingStore()
+          .ws?.addEventListener("close", onClose);
+
+        return () => {
+          // console.log("🚀 ~ clientMessages ~ cleanup");
+          sub.remove();
+          input.client
+            .getWebSocketBackingStore()
+            .ws?.removeEventListener("close", onClose);
+        };
+      }
+    ),
+    connectDevClient: fromPromise(async () => {
+      // console.log("🚀 ~ connectDevClient");
+      return await getDevToolsPluginClientAsync("xstate-inspect");
+    }),
+    disconnectDevClient: fromPromise<any, { client: DevToolsPluginClient }>(
+      async ({ input }) => {
+        await input.client.closeAsync();
       }
     ),
   },
@@ -116,26 +148,26 @@ export const inspectMachine = setup({
         //   "🚀 ~ WebViewAdapter ~ this.actorMap.forEach ~ SENDING ACTOR:",
         //   actorEvent
         // );
-        context.client.sendMessage("event", actorEvent);
+        context.client!!.sendMessage("event", actorEvent);
       });
     },
     sendEventToInspector: ({ context, event }) => {
       assertEvent(event, "InspectorEvent");
 
-      if (context.client.isConnected()) {
-        context.client.sendMessage("event", event.event);
+      if (context.client!!.isConnected()) {
+        context.client!!.sendMessage("event", event.event);
       }
     },
   },
   guards: {
     isRunning: stateIn({ Status: "Running" }),
+    hasDevClient: ({ context }) => !!context.client,
   },
 }).createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5QEsB2sAOYDGAXABALYCG2AFmmAHQDCA9qqjrsgwMQCS6WedATvUbNIAbQAMAXUSgMdWMhYNpIAB6IAtAEYA7FQAcAVgMAWAGx7tBgDQgAnok0BOAExVnY048fbHxx2M1TDwBfYJs0TGYiUgomWgYmPFZUKgA5OlxBRNxITm5mfgBRADcwVFxxKSQQWXlFVGU1BHUAZlNNNxdHPRaW400xPVNtG3sENtMqU2Me-3aDD0DTUPD8vGjySnihJIZt7NyuSN4+ErKKyWVahWTGxANnPSovIJbtYxaxFsDnUcRtSYBQJ6TTGMyaZwzYwrEARHgEEibOJZZjJfbCCB5Y64IqlcoiTRVGRyG5KapNB66bzOdqWAxDTR9P4IJyudzaMQBPSGTn9GFwqKI2LUFG7FKinKYgDKuGIfAuRJqJPqdwQjharj0Hw5JiMxne1jsiGcmie2m0fWczj62lBPm0-LWCJiWxlxFwAFdYFQAEoexhoKBsGV0DCVK7K27kxAtRz6QKxwJgjXc5mmNr6brGMTObQgywWx3YjbCqhuz3ekMYLDS2Xy8PVa4q6PNTQGXR6dzOFw5xkPHrMi1PMQzRlDL45gzLGGoOgQODKAXrIWUCN1KOgJrqMwtKbZ0zOQ1jLTGAzPbnfQwGFoWAyBIvwktbCUbpXrsmbjTZuPd7s9PoDEMIxGq2HQzD0ppGDelj3mEsJOk+yIJKiezpJkyF4JAa6kg0LbqF2bieEYkH0lqDzMpCuicje0xfC0CxWnoD6Ci6SE7PU6KYRA2HNp+CAApMFofH0-Tdv4vwgX0u56FmAwQoyeZTsxy6sdQ5Zejxr5bv0Z60QeR73H4VCxlqOZ5jo7YtMpzpImpsoVr6-qoIGmkfqoMaTKCHhTrMXyBI4g43lQI4gjRE6HtOqzFiucTqZWOLVlhjaRm5W5tLoemHoFw6jiYfSeOajihKEQA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QEsB2sAOYDGAXABALYCG2AFmmAMQByYA7gIJ4D2ATgNoAMAuoqBhaxkuZC1T8QAT0QBaAJwAOAHRLFAZgCMigKw71igOw7NANgA0IAB6JNAJkNdlp0wBYumw-L2vDvgL7+lmiYOAQk5JTKAMLiqGFiqFQAkuhYrGyxqPF4kNx8SCCCwqLikjYImvKuyhpc8oZ+ipp6La6WMpWmmspV8nZ2iqZ2JlwOgcFpYUSkFPExcQniC9lhkFQAsmC4bCwAyizYANbbACLIsNiLuRD5ksUiieWIjvLKOsamOm7qJupcFmkiFcSne2i4OjGdnkXGaLQmIBC6XCsyiWRypVQKwx61SoQyAFEAG5gVC4O6FB6Y54Ib41AaKaqQszVdSAzp9VTyUxKVzqQx2eyGUyKBFI6YROZgbFLLHotYQKh7XDENjk3j3ISPMqFCrydR2Wp8xw6Vw+Pw6DqIQUqRrqVwDe2GTS+BpiqZ4GaRebK4i4ACusGUACV-dk0FAlbgWBgKQItdTdYhhrVHO4XeolLD-pagZV+W8hmbNFotJCAe78SjvdLfQGg8qY1hFb61XGigmnkmELJ9O9hl9XJoIfUBXYrZU7HzVIz7XzPNy7KZK8ivVLlKcwETogAbZCk3DKGgsXDym5UCDiaVoIksE7KcWeyVRTfbvcHo8ns+4SAIG+HP1EnydsqS7UA9XpRRmkUVxYOGZolwnBoakZDRNCqM0XGqQIghAVAWAgOBJEfaspU1EowOsORS1Uf4WmHDwvHqdQJ1kEtai4LhGnLMx0P0VwVwlVF5m-SjQJ1cC5CXGo+S4WDoS+AZXCMCdDHUZx5H6AZhn4rhfkEp9hOlUTlmPU9rh-CByO1CRu1kQVTGUWT5O5HQlJUvN3B0ZQARGBSsK8AzSLRCzEhlG5rMTSSED8N4vlMO01G0PQJ35Q0tCg2CPF+bTl1wki1yiOtA0iyiKnsr5aI8UZGJhfUJz4xzlP6UwtFMbLhSCwqfRVesQzDVAI1KiSqMqXRahMEtswFdw1Ia-5Cw+BwDH5KoBi658er9QNlEbDBm2G2zovszwqvoziF3qdlbAWiaBUZHQ4VggT8o9YL5lfXd9zJQ6aXsvt2q4hx0JGe17QnZpDFqJRfjcTSzTNDajI3Lcvo-Mzv0gX67LsCFnE4gVnXsfjwbzapCxhh1kM8Z0kZrFG32+w9MasylOxGioDULEEvA+PSXEe3NOnJ6GNCpvwaZewIgA */
   id: "inspect machine",
 
-  context: ({ input }) => ({
-    client: input.client,
+  context: () => ({
     isConnected: false,
     actorEvents: [],
     actors: [],
@@ -155,6 +187,9 @@ export const inspectMachine = setup({
 
         Connected: {
           on: {
+            MetroSocketDisconnected: {
+              target: "NotConnected",
+            },
             InspectorEvent: [
               {
                 guard: "isRunning",
@@ -163,7 +198,6 @@ export const inspectMachine = setup({
             ],
 
             Start: {
-              target: "Connected",
               actions: "sendActors",
             },
           },
@@ -197,13 +231,45 @@ export const inspectMachine = setup({
         },
       },
     },
-  },
 
-  invoke: {
-    src: "listenForConnections",
-    input: ({ context }) => ({
-      client: context.client,
-    }),
+    DevClient: {
+      states: {
+        Connecting: {
+          invoke: {
+            src: "connectDevClient",
+            onDone: {
+              target: "Connected",
+              actions: assign({
+                client: ({ event }) => event.output,
+              }),
+            },
+          },
+        },
+
+        Errored: {
+          after: {
+            2000: "Connecting",
+          },
+        },
+
+        Connected: {
+          on: {
+            MetroSocketDisconnected: {
+              target: "Errored",
+            },
+          },
+          invoke: {
+            src: "clientMessages",
+            input: ({ context }) => ({
+              client: context.client!!,
+            }),
+          },
+        },
+      },
+
+      initial: "Connecting",
+      description: `Manages the connection to the metro bundler`,
+    },
   },
 
   type: "parallel",

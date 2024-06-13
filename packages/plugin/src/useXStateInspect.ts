@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import { ExpoAdapter } from "./ExpoAdapter";
 import safeStringify from "fast-safe-stringify";
 
+export type TAdapter = typeof ExpoAdapter;
+
 import { Inspector as XStateInspector } from "@statelyai/inspect/src/types";
 import {
   InspectorOptions,
@@ -10,32 +12,27 @@ import {
 } from "react-native-xstate-inspect-shared";
 export type Inspector = XStateInspector<ExpoAdapter>;
 
-export function useXStateInspector(
+export function useXStateInspectorDevTool(
   options?: InspectorOptions
-): Inspector | null {
-  const client = useDevToolsPluginClient("xstate-inspect");
-
+): Inspector {
   const inspector = useMemo(() => {
-    if (client) {
-      const resolvedOptions = {
-        filter: () => true,
-        serialize: (inspectionEvent) =>
-          JSON.parse(safeStringify(inspectionEvent)),
-        autoStart: true,
-        ...options,
-      } as Required<InspectorOptions>;
+    const resolvedOptions = {
+      filter: () => true,
+      serialize: (inspectionEvent) =>
+        JSON.parse(safeStringify(inspectionEvent)),
+      autoStart: true,
+      ...options,
+    } as Required<InspectorOptions>;
 
-      const inspector = createActorAwareInspector(
-        new ExpoAdapter(client),
-        resolvedOptions
-      );
-      if (resolvedOptions.autoStart) {
-        inspector.start();
-      }
-      return inspector;
+    const inspector = createActorAwareInspector(
+      new ExpoAdapter(),
+      resolvedOptions
+    );
+    if (resolvedOptions.autoStart) {
+      inspector.start();
     }
-    return null;
-  }, [client]);
+    return inspector;
+  }, []);
 
   return inspector;
 }

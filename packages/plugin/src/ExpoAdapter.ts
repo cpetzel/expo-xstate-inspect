@@ -7,12 +7,8 @@ import { ActorAwareAdapter } from "react-native-xstate-inspect-shared";
 export class ExpoAdapter implements ActorAwareAdapter {
   private inspector: ActorRefFrom<typeof inspectMachine>;
 
-  constructor(client: DevToolsPluginClient) {
-    this.inspector = createActor(inspectMachine, {
-      input: {
-        client,
-      },
-    }).start();
+  constructor() {
+    this.inspector = createActor(inspectMachine).start();
   }
 
   handleNewActor(actorRef: AnyActorRef) {

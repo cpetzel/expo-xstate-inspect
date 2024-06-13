@@ -16,10 +16,10 @@ There are two ways to use this plugin. You can either construct your own inspect
 
 ### Create Inspector Manually
 ```typescript
-import { useXStateInspector } from 'expo-xstate-inspect';
+import { useXStateInspectorDevTool } from 'expo-xstate-inspect';
 
 const Component = () => {
-  const inspector = useXstateInspector();
+  const inspector = useXStateInspectorDevTool();
   const [state, send] = useMachine(machine, {
     inspect: inspector?.inspect,
   });
@@ -31,20 +31,20 @@ const Component = () => {
 
 First, create a Provider that will internally create the inspector.
 ```typescript
-import { XStateInspectorProvider } from 'expo-xstate-inspect';
+import { XStateInspectorDevToolProvider } from 'expo-xstate-inspect';
 
 const App = () => (
-    <XStateInspectorProvider>
+    <XStateInspectorDevToolProvider>
       {/* rest of app */}
-    </XStateInspectorProvider>
+    </XStateInspectorDevToolProvider>
 );
 ```
 Then in a component where you have a machine, grab the inspector using this hook.
 
 ```typescript
-import { useProvidedXstateInspector } from 'expo-xstate-inspect';
+import { useProvidedXstateInspectorDevTool } from 'expo-xstate-inspect';
 
- const inspector = useProvidedXstateInspector();
+ const inspector = useProvidedXstateInspectorDevTool();
   const [state, send] = useMachine(audioMachine, {
     inspect: inspector?.inspect,
   });
