@@ -9,8 +9,8 @@ interface Props {
 export function FloatingInspector({ onClosePress }: Props) {
   return (
     <DragView
-      height={300}
-      width={400}
+      height={250}
+      width={250}
       x={20}
       y={50}
       onClosePress={onClosePress}

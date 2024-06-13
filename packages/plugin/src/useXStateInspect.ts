@@ -1,4 +1,3 @@
-import { useDevToolsPluginClient } from "expo/devtools";
 import { useMemo } from "react";
 import { ExpoAdapter } from "./ExpoAdapter";
 import safeStringify from "fast-safe-stringify";

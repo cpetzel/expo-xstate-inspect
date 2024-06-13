@@ -11,7 +11,7 @@ export type Inspector = XStateInspector<WebViewAdapter>;
 
 export function useFloatingXStateInspector(
   options?: InspectorOptions
-): Inspector | null {
+): Inspector {
   const inspector = useMemo(() => {
     const resolvedOptions = {
       filter: () => true,

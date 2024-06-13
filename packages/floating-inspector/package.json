@@ -1,6 +1,6 @@
 {
   "name": "react-native-xstate-floating-inspect",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "xstate inspector in a floating window",
   "main": "src/index.ts",
   "author": "cpetzel",
