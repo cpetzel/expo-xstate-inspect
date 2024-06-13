@@ -28,7 +28,7 @@ This should work for all React Native projects (not only Expo)
 <img src="./static/FloatingInspectDemo.gif" alt="Inspector in action" width="400"/>
 <img src="./static/FloatingResizeDemo.gif" alt="Resizeable" width="400"/>
 
-See the [floating-inspector README](./packages/plugin/README.md) for info on how to use the in-app floating inspector. 
+See the [floating-inspector README](./packages/floating-inspector/README.md) for info on how to use the in-app floating inspector. 
 
 
 
