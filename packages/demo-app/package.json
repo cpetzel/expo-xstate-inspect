@@ -7,7 +7,9 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "analyze-release": "mkdir tmp && yarn react-native-bundle-visualizer --platform ios --bundle-output ./tmp/ios.bundle --expo true --dev false --verbose",
+    "analyze-debug": "mkdir tmp && yarn react-native-bundle-visualizer --platform ios --bundle-output ./tmp/ios.bundle --expo true --dev true --verbose"
   },
   "repository": {
     "type": "git",
@@ -22,9 +24,10 @@
     "expo-xstate-inspect": "*",
     "react": "18.2.0",
     "react-native": "0.74.1",
+    "react-native-bundle-visualizer": "^3.1.3",
     "react-native-xstate-floating-inspect": "*",
-    "tamagui": "^1.99.1",
-    "react-native-xstate-inspect-shared": "*"
+    "react-native-xstate-inspect-shared": "*",
+    "tamagui": "^1.99.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

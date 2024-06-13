@@ -3,13 +3,12 @@ import { useMemo } from "react";
 import { ExpoAdapter } from "./ExpoAdapter";
 import safeStringify from "fast-safe-stringify";
 
-export type TAdapter = typeof ExpoAdapter;
-
 import { Inspector as XStateInspector } from "@statelyai/inspect/src/types";
 import {
   InspectorOptions,
   createActorAwareInspector,
 } from "react-native-xstate-inspect-shared";
+
 export type Inspector = XStateInspector<ExpoAdapter>;
 
 export function useXStateInspectorDevTool(
