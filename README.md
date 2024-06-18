@@ -67,3 +67,7 @@ See the [Demo App](./packages/demo-app/App.tsx) for reference implementation
 # Contributing
 
 Contributions are very welcome!
+
+
+#### Notes: 
+@statelyai/inspect is using a very old version of partysocket (0.25). I added a dependency on their latest version (1.0) to address some of the [react native issues](https://github.com/partykit/partykit/issues/232) ([another issue](https://github.com/partykit/partykit/issues/516))

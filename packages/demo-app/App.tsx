@@ -1,7 +1,6 @@
-import "partysocket/event-target-polyfill";
-
+import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View, Button } from "react-native";
 import { createMachine, fromPromise } from "xstate";
 import { useMachine } from "@xstate/react";
 import {
@@ -9,8 +8,6 @@ import {
   useXStateInspectorDevTool,
   XStateInspectorDevToolProvider,
 } from "expo-xstate-inspect";
-import { TamaguiProvider, createTamagui, View, Button } from "tamagui";
-import { config } from "@tamagui/config/v3";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   FloatingInspector,
@@ -20,9 +17,14 @@ import {
   useProvidedXstateFloatingInspector,
 } from "react-native-xstate-floating-inspect";
 import { useMemo, useState } from "react";
-import { combineObservers } from "react-native-xstate-inspect-shared";
+import {
+  combineObservers,
+  TSkyInspector,
+  useSkyXstateInspector,
+  useProvidedSkyInspector,
+  SkyInspectorProvider,
+} from "react-native-xstate-inspect-shared";
 import type { DevPluginInspector } from "expo-xstate-inspect";
-const tamaguiConfig = createTamagui(config);
 
 function getNextEvents(snapshot) {
   return [...new Set([...snapshot._nodes.flatMap((sn) => sn.ownEvents)])];
@@ -34,15 +36,19 @@ const useContextProviders = true;
 export default function App() {
   return (
     <GestureHandlerRootView>
-      <TamaguiProvider config={tamaguiConfig}>
-        {useContextProviders ? <AppUsingProvider /> : <AppUsingHooks />}
-      </TamaguiProvider>
+      {useContextProviders ? <AppUsingProvider /> : <AppUsingHooks />}
     </GestureHandlerRootView>
   );
 }
 
+const onSkyConnect = (url: string) =>
+  console.log("🚀 ~ Sky Inspector created at url: ", url);
+
 const AppUsingHooks = () => {
   const floatingInspector = useFloatingXStateInspector();
+
+  const skyInspector = useSkyXstateInspector({ onSkyConnect });
+
   const expoPluginInspector = useXStateInspectorDevTool({
     autoStart: true,
     /*  filter: (event) => {
@@ -58,6 +64,7 @@ const AppUsingHooks = () => {
     <View style={styles.container}>
       <FloatingXStateInspectorProvider>
         <Demo
+          skyInspector={skyInspector}
           floatingInspector={floatingInspector}
           expoPluginInspector={expoPluginInspector}
           isFloatingVisible={isFloatingVisible}
@@ -74,11 +81,12 @@ const AppUsingHooks = () => {
 const ProvidedDemo = () => {
   const floatingInspector = useProvidedXstateFloatingInspector();
   const expoPluginInspector = useProvidedXstateInspectorDevTool();
+  const skyInspector = useProvidedSkyInspector();
   const [isFloatingVisible, setIsFloatingVisible] = useState(true);
-
   return (
     <View style={styles.container}>
       <Demo
+        skyInspector={skyInspector}
         floatingInspector={floatingInspector}
         expoPluginInspector={expoPluginInspector}
         isFloatingVisible={isFloatingVisible}
@@ -94,25 +102,29 @@ const ProvidedDemo = () => {
 function AppUsingProvider() {
   return (
     <FloatingXStateInspectorProvider>
-      <XStateInspectorDevToolProvider>
-        <ProvidedDemo />
-      </XStateInspectorDevToolProvider>
+      <SkyInspectorProvider options={{ onSkyConnect }}>
+        <XStateInspectorDevToolProvider>
+          <ProvidedDemo />
+        </XStateInspectorDevToolProvider>
+      </SkyInspectorProvider>
     </FloatingXStateInspectorProvider>
   );
 }
 
 const Demo = ({
+  skyInspector,
   floatingInspector,
   expoPluginInspector,
   isFloatingVisible,
   setIsFloatingVisible,
 }: {
+  skyInspector: TSkyInspector;
   floatingInspector: TFloatingInspector;
   expoPluginInspector: DevPluginInspector;
   isFloatingVisible: boolean;
   setIsFloatingVisible: (visible: boolean) => void;
 }) => {
-  const inspectors = [expoPluginInspector, floatingInspector];
+  const inspectors = [expoPluginInspector, floatingInspector, skyInspector];
   const combinedInspectors = useMemo(() => {
     return combineObservers(inspectors);
   }, [expoPluginInspector, floatingInspector]);
@@ -127,9 +139,11 @@ const Demo = ({
     <View style={styles.container}>
       <Text>Current State: {JSON.stringify(state.value)}</Text>
       {nextEvents.map((event) => (
-        <Button key={event} onPress={() => send({ type: event })}>
-          {event}
-        </Button>
+        <Button
+          title={event}
+          key={event}
+          onPress={() => send({ type: event })}
+        ></Button>
       ))}
       <View
         style={{
@@ -138,17 +152,20 @@ const Demo = ({
           marginTop: 40,
         }}
       >
-        <Button onPress={() => inspectors.forEach((i) => i.start())}>
-          Start All Inspectors
-        </Button>
-        <Button onPress={() => inspectors.forEach((i) => i.stop())}>
-          Stop All Inspectors
-        </Button>
+        <Button
+          onPress={() => inspectors.forEach((i) => i.start())}
+          title="Start All Inspectors"
+        ></Button>
+        <Button
+          onPress={() => inspectors.forEach((i) => i.stop())}
+          title="Stop All Inspectors"
+        ></Button>
       </View>
       {!isFloatingVisible && (
-        <Button onPress={() => setIsFloatingVisible(true)}>
-          Show Floating Inspector
-        </Button>
+        <Button
+          onPress={() => setIsFloatingVisible(true)}
+          title="Show Floating Inspector"
+        ></Button>
       )}
       <StatusBar style="auto" />
     </View>
@@ -219,10 +236,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-
-// make TypeScript type everything based on your config
-type Conf = typeof tamaguiConfig;
-declare module "@tamagui/core" {
-  // or 'tamagui'
-  interface TamaguiCustomConfig extends Conf {}
-}

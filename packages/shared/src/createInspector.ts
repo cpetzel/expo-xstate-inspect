@@ -30,10 +30,10 @@ export function createActorAwareInspector<TAdapter extends ActorAwareAdapter>(
   statelyInspector.inspect = {
     next: (event) => {
       idleCallback(function inspectNext() {
-        const convertedEvent = convertXStateEvent(event);
         if (event.type === "@xstate.actor") {
           adapter.handleNewActor(event.actorRef);
         }
+        const convertedEvent = convertXStateEvent(event);
         if (convertedEvent) {
           sendAdapter(convertedEvent);
         }

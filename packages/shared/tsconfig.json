@@ -3,6 +3,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "jsx": "react-native",
 
     /* Basic Options */
     "declaration": true,

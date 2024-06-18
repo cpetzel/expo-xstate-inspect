@@ -1,13 +1,15 @@
-import { StatelyInspectionEvent } from "@statelyai/inspect";
+import { ActorAwareAdapter } from "./";
 import { ActorRefFrom, AnyActorRef, createActor } from "xstate";
-import { inspectMachine } from "./machine";
-import { ActorAwareAdapter } from "react-native-xstate-inspect-shared";
+import { inspectMachine } from "./sky-machine";
+import { StatelyInspectionEvent } from "@statelyai/inspect/src/types";
 
-export class ExpoAdapter implements ActorAwareAdapter {
+export class PartySocketAdapter implements ActorAwareAdapter {
   private inspector: ActorRefFrom<typeof inspectMachine>;
 
-  constructor() {
-    this.inspector = createActor(inspectMachine).start();
+  constructor(onSkyConnect?: (url: string) => void) {
+    this.inspector = createActor(inspectMachine, {
+      input: { onSkyConnect },
+    }).start();
   }
 
   handleNewActor(actorRef: AnyActorRef) {
@@ -18,12 +20,10 @@ export class ExpoAdapter implements ActorAwareAdapter {
   }
 
   public start() {
-    // console.log("ExpoAdapter -start");
     this.inspector.send({ type: "Start" });
   }
 
   public stop() {
-    // console.log("🚀 ~ ExpoAdapter ~ stop");
     this.inspector.send({ type: "Stop" });
   }
 

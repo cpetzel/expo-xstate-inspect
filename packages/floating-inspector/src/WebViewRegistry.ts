@@ -1,5 +1,5 @@
 import { RefObject } from "react";
-import WebView, { WebViewMessageEvent } from "react-native-webview";
+import WebView from "react-native-webview";
 import EventEmitter from "react-native/Libraries/vendor/emitter/EventEmitter";
 
 export interface WebViewAddedListener {

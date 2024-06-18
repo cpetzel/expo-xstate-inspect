@@ -6,6 +6,13 @@ import {
 import { AnyActorRef, Observer, InspectionEvent } from "xstate";
 
 export { createActorAwareInspector } from "./createInspector";
+export { convertActorToStatelyEvent } from "./utils";
+export { createSkyInspector, TSkyInspector } from "./sky";
+export {
+  useSkyXstateInspector,
+  useProvidedSkyInspector,
+  SkyInspectorProvider,
+} from "./sky-context";
 
 export interface InspectorOptions {
   filter?: (event: StatelyInspectionEvent) => boolean;
@@ -32,27 +39,6 @@ export function isEventObject(event: unknown) /*:  event is AnyEventObject */ {
     event !== null &&
     typeof (event as any).type === "string"
   );
-}
-
-export function getRoot(actorRef: AnyActorRef) {
-  let marker: AnyActorRef | undefined = actorRef;
-
-  do {
-    marker = marker._parent;
-  } while (marker?._parent);
-
-  return marker;
-}
-
-export function getRootId(
-  actorRefOrId: AnyActorRef | string
-): string | undefined {
-  const rootActorRef =
-    typeof actorRefOrId === "string"
-      ? undefined
-      : getRoot(actorRefOrId)?.sessionId;
-
-  return rootActorRef ?? undefined;
 }
 
 /**

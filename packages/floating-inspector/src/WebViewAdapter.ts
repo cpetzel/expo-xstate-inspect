@@ -1,16 +1,14 @@
 import { StatelyInspectionEvent, StatelyActorEvent } from "@statelyai/inspect";
-import pkg from "@statelyai/inspect/package.json";
 import WebView from "react-native-webview";
 import { WebViewRegistry, WebViewAddedListener } from "./WebViewRegistry";
 import { RefObject } from "react";
 import { AnyActorRef } from "xstate";
 import {
   ActorAwareAdapter,
-  getRootId,
+  convertActorToStatelyEvent,
   isEventObject,
 } from "react-native-xstate-inspect-shared";
 import EventEmitter from "react-native/Libraries/vendor/emitter/EventEmitter";
-import safeStringify from "safe-stable-stringify";
 
 // TODO move this logic to a machine? like the plugin?
 export class WebViewAdapter implements ActorAwareAdapter, WebViewAddedListener {
@@ -54,44 +52,7 @@ export class WebViewAdapter implements ActorAwareAdapter, WebViewAddedListener {
       if (data.type === "@statelyai.connected") {
         // send all actor and snapthos
         this.actorMap.forEach((actorRef) => {
-          const snapshot = actorRef.getSnapshot();
-
-          if (snapshot.status !== "active") {
-            // console.log(
-            //   "🚀 ~ WebViewAdapter ~ onWebViewAdded ~ actor is not active",
-            //   actorRef.id
-            // );
-            return;
-          }
-
-          const sessionId =
-            typeof actorRef === "string" ? actorRef : actorRef.sessionId;
-          const definitionObject = (actorRef as any)?.logic?.config;
-          const definition = definitionObject
-            ? safeStringify(definitionObject)
-            : undefined;
-          const rootId =
-            /*  info?.rootId ?? */ typeof actorRef === "string"
-              ? undefined
-              : getRootId(actorRef);
-          const parentId =
-            /*  info?.parentId ??  */ typeof actorRef === "string"
-              ? undefined
-              : actorRef._parent?.sessionId;
-          const name = definitionObject ? definitionObject.id : sessionId;
-
-          const actorEvent = {
-            type: "@xstate.actor",
-            name,
-            sessionId,
-            createdAt: Date.now().toString(),
-            _version: pkg.version,
-            rootId,
-            parentId,
-            id: null as any,
-            definition,
-            snapshot: snapshot ?? { status: "active" },
-          } satisfies StatelyActorEvent;
+          const actorEvent = convertActorToStatelyEvent(actorRef);
           this.send(actorEvent);
         });
       }
