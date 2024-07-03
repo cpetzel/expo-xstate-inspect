@@ -1,6 +1,6 @@
 {
   "name": "expo-xstate-inspect",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Inspect your xstate machines",
   "main": "build/index.js",
   "types": "build/index.d.ts",

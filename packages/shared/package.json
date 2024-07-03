@@ -1,6 +1,6 @@
 {
   "name": "react-native-xstate-inspect-core",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "dist/index.js",
   "author": "cpetzel",
   "license": "MIT",
