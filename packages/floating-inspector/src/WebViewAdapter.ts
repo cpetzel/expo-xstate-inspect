@@ -7,7 +7,7 @@ import {
   ActorAwareAdapter,
   convertActorToStatelyEvent,
   isEventObject,
-} from "react-native-xstate-inspect-shared";
+} from "react-native-xstate-inspect-core";
 import EventEmitter from "react-native/Libraries/vendor/emitter/EventEmitter";
 
 // TODO move this logic to a machine? like the plugin?

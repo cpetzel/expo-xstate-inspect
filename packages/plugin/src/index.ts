@@ -1,4 +1,4 @@
-import { InspectorOptions } from "react-native-xstate-inspect-shared";
+import { InspectorOptions } from "react-native-xstate-inspect-core";
 
 export let useXStateInspectorDevTool: typeof import("./useXStateInspect").useXStateInspectorDevTool;
 export let XStateInspectorDevToolProvider: typeof import("./context").XStateInspectorDevToolProvider;

@@ -6,7 +6,7 @@ import { WebViewAdapter } from "./WebViewAdapter";
 import {
   InspectorOptions,
   createActorAwareInspector,
-} from "react-native-xstate-inspect-shared";
+} from "react-native-xstate-inspect-core";
 export type Inspector = XStateInspector<WebViewAdapter>;
 
 export function useFloatingXStateInspector(

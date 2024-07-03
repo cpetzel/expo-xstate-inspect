@@ -1,8 +1,10 @@
-import type { TSkyInspector } from "./";
+import type { InspectorOptions } from ".";
+import { Inspector } from "@statelyai/inspect/src/types";
+
+import { createActorAwareInspector } from "./createInspector";
+import { PartySocketAdapter } from "./PartySocketAdapter";
 import React, { ReactNode, createContext, useContext, useMemo } from "react";
 import safeStringify from "fast-safe-stringify";
-
-import { createSkyInspector, SkyOptions } from "./sky";
 
 export function useSkyXstateInspector(options: SkyOptions = {}): TSkyInspector {
   const inspector = useMemo(() => {
@@ -48,3 +50,20 @@ export const SkyInspectorProvider: React.FC<{
 export const useProvidedSkyInspector = () => {
   return useContext(SkyInspectContext);
 };
+
+export type TSkyInspector = Inspector<PartySocketAdapter>;
+
+export type SkyOptions = {
+  onerror?: (error: Error) => void;
+  onSkyConnect?: (url: string) => void;
+} & InspectorOptions;
+
+export function createSkyInspector(options: SkyOptions = {}): TSkyInspector {
+  const { autoStart = true, onSkyConnect, ...coreOptions } = options;
+  const inspector = createActorAwareInspector(
+    new PartySocketAdapter(onSkyConnect),
+    coreOptions
+  );
+
+  return inspector;
+}

@@ -1,5 +1,5 @@
 import { StatelyInspectionEvent } from "@statelyai/inspect/src/types";
-import { convertActorToStatelyEvent } from "react-native-xstate-inspect-shared";
+import { convertActorToStatelyEvent } from "react-native-xstate-inspect-core";
 
 import {
   DevToolsPluginClient,

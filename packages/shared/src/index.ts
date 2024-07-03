@@ -7,12 +7,14 @@ import { AnyActorRef, Observer, InspectionEvent } from "xstate";
 
 export { createActorAwareInspector } from "./createInspector";
 export { convertActorToStatelyEvent } from "./utils";
-export { createSkyInspector, TSkyInspector } from "./sky";
+
 export {
+  createSkyInspector,
+  TSkyInspector,
   useSkyXstateInspector,
   useProvidedSkyInspector,
   SkyInspectorProvider,
-} from "./sky-context";
+} from "./sky";
 
 export interface InspectorOptions {
   filter?: (event: StatelyInspectionEvent) => boolean;

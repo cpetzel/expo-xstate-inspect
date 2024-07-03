@@ -20,7 +20,7 @@
     "src"
   ],
   "dependencies": {
-    "react-native-xstate-inspect-shared": "^1.0.0",
+    "react-native-xstate-inspect-core": "^1.0.0",
     "react": "18.2.0",
     "react-native": "^0.74.1",
     "react-native-gesture-handler": "^2.16.2",

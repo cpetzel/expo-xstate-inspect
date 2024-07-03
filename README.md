@@ -18,6 +18,12 @@ This should open up the inpsector in a web browser
 ##### See the [README](./packages/plugin/README.md) for implementation details. 
 
 
+# Sky Inspector (stately.ai hosted webpage inspector)
+As of June 2024, the createSkyInspector from stately does not work with React Native. I've created a tool that allows this to work with React Native. 
+This behaves just like the expo dev tool, but it allows anyone to view the inspector through a web browser using a public URL. 
+
+##### See the [README](./packages/shared/SKY-README.md) for implementation details. 
+
 
 
 
@@ -38,7 +44,7 @@ You can use both inspectors by using the `combineObservers` helper function.
 
 
 ```typescript
-import { combineObservers } from "react-native-xstate-inspect-shared";
+import { combineObservers } from "react-native-xstate-inspect-core";
 
 // your component
 const inspectors = [expoPluginInspector, floatingInspector];

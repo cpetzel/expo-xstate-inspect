@@ -1,6 +1,6 @@
 import React, { ReactNode, createContext, useContext } from "react";
 import { useXStateInspectorDevTool, type Inspector } from "./useXStateInspect";
-import { InspectorOptions } from "react-native-xstate-inspect-shared";
+import { InspectorOptions } from "react-native-xstate-inspect-core";
 const XStateInspectContext = createContext<Inspector | null>(null);
 
 /**

@@ -1,5 +1,5 @@
 {
-  "name": "react-native-xstate-inspect-shared",
+  "name": "react-native-xstate-inspect-core",
   "version": "1.0.3",
   "main": "dist/index.js",
   "author": "cpetzel",

@@ -18,12 +18,13 @@ import {
 } from "react-native-xstate-floating-inspect";
 import { useMemo, useState } from "react";
 import {
-  combineObservers,
   TSkyInspector,
   useSkyXstateInspector,
   useProvidedSkyInspector,
   SkyInspectorProvider,
-} from "react-native-xstate-inspect-shared";
+  combineObservers,
+} from "react-native-xstate-inspect-core";
+
 import type { DevPluginInspector } from "expo-xstate-inspect";
 
 function getNextEvents(snapshot) {
