@@ -1,3 +1,5 @@
+
+
 ## React Native Xstate Inspector
 
 Inspect your V5 xstate machines using [StatelyAI's inspect tool](https://stately.ai/blog/2024-01-15-stately-inspector/) with React Native and Expo apps
@@ -10,7 +12,7 @@ See the [Demo App](./packages/demo-app/App.tsx) for reference implementation
 ![](./static/expo-select.png)
 
 
-This should open up the inpsector in a web browser
+This should open up the inspector in a web browser
 
 
 ![Inspector in action](./static/devpluginactordemo.gif)
