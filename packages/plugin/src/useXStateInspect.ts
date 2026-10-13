@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { ExpoAdapter } from "./ExpoAdapter";
 import safeStringify from "fast-safe-stringify";
 
-import { Inspector as XStateInspector } from "@statelyai/inspect/src/types";
+import type { Inspector as XStateInspector } from "react-native-xstate-inspect-core";
 import {
   InspectorOptions,
   createActorAwareInspector,

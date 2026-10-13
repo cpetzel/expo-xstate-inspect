@@ -1,6 +1,6 @@
 {
   "name": "expo-xstate-inspect",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "Inspect your xstate machines",
   "main": "build/index.js",
   "types": "build/index.d.ts",
@@ -10,13 +10,14 @@
     "url": "https://github.com/cpetzel/expo-xstate-inspect.git"
   },
   "scripts": {
-    "build": "expo-module build",
-    "build:all": "expo-module prepare && cd webui && npx expo export -p web --output-dir ../dist",
-    "clean": "expo-module clean",
-    "prepare": "expo-module prepare",
-    "prepublishOnly": "expo-module prepare && expo-module prepublishOnly && cd webui && npx expo export -p web --output-dir ../dist",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "build:web": "cd webui && npx expo export -p web --output-dir ../dist",
+    "build:all": "tsc && npm run build:web",
+    "clean": "rm -rf build dist",
+    "prepublishOnly": "npm run build:all",
     "web:dev": "cd webui && npx expo start -w",
-    "web:export": "cd webui && npx expo export -p web --output-dir ../dist"
+    "web:export": "npm run build:web"
   },
   "keywords": [
     "expo",
@@ -31,10 +32,18 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "react-native-xstate-inspect-core": "^1.0.0"
+    "fast-safe-stringify": "^2.1.1",
+    "react-native-xstate-inspect-core": "^2.0.0"
   },
   "devDependencies": {
-    "expo": "~51.0.9",
-    "expo-module-scripts": "^3.1.0"
+    "expo": "~57.0.28",
+    "typescript": "~6.0.3",
+    "xstate": "^5.33.2",
+    "@types/react": "~19.2.2",
+    "@types/node": "^22"
+  },
+  "peerDependencies": {
+    "expo": ">=57",
+    "xstate": "^5.13.1"
   }
 }

@@ -1,7 +1,7 @@
 import { ActorAwareAdapter } from "./";
 import { ActorRefFrom, AnyActorRef, createActor } from "xstate";
 import { inspectMachine } from "./sky-machine";
-import { StatelyInspectionEvent } from "@statelyai/inspect/src/types";
+import type { StatelyInspectionEvent } from "./";
 
 export class PartySocketAdapter implements ActorAwareAdapter {
   private inspector: ActorRefFrom<typeof inspectMachine>;

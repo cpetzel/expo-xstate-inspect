@@ -1,5 +1,5 @@
 import { WebViewAdapter } from "./WebViewAdapter";
-import { Inspector } from "@statelyai/inspect/src/types";
+import type { Inspector } from "react-native-xstate-inspect-core";
 export * from "./FloatingInspector";
 export * from "./context";
 export { useFloatingXStateInspector } from "./useFloatingXstateInspector";

@@ -1,18 +1,17 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
-
   "compilerOptions": {
     "allowJs": true,
     "esModuleInterop": true,
+    "strict": false,
     "jsx": "react-native",
     "lib": ["DOM", "ESNext"],
-    "moduleResolution": "node",
+    "moduleResolution": "node10",
     "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "ignoreDeprecations": "6.0"
   },
-
   "include": ["src"],
   "exclude": ["node_modules"]
 }

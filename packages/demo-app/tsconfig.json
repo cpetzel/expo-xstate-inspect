@@ -1,5 +1,5 @@
 {
-  "compilerOptions": {},
   "extends": "expo/tsconfig.base",
+  "compilerOptions": { "strict": false },
   "include": ["./App.tsx"]
 }

@@ -1,4 +1,4 @@
-import { StatelyInspectionEvent } from "@statelyai/inspect/src/types";
+import type { StatelyInspectionEvent } from "react-native-xstate-inspect-core";
 import { convertActorToStatelyEvent } from "react-native-xstate-inspect-core";
 
 import {
@@ -88,11 +88,10 @@ export const inspectMachine = setup({
       // send all actors
       context.actors.forEach((actorRef) => {
         const actorEvent = convertActorToStatelyEvent(actorRef);
-        // console.log(
-        //   "🚀 ~ WebViewAdapter ~ this.actorMap.forEach ~ SENDING ACTOR:",
-        //   actorEvent
-        // );
-        context.client!!.sendMessage("event", actorEvent);
+        // finished actors have no event to replay
+        if (actorEvent) {
+          context.client!!.sendMessage("event", actorEvent);
+        }
       });
     },
     sendEventToInspector: ({ context, event }) => {

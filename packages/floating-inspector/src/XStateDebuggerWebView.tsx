@@ -3,7 +3,7 @@ import { Platform, StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
 import { WebViewMessageEvent } from "react-native-webview/lib/WebViewTypes";
 import { WebViewRegistry } from "./WebViewRegistry";
-import EventEmitter from "react-native/Libraries/vendor/emitter/EventEmitter";
+import { EventEmitter } from "./EventEmitter";
 
 const disableTextSelection = Platform.select({
   android: `document.body.style.userSelect = 'none';`,

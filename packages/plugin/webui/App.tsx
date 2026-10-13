@@ -63,7 +63,7 @@ export default function App() {
     const subscription = client?.addMessageListener(
       "event",
       (data: StatelyInspectionEvent) => {
-        console.log("received event from client", data, inspect);
+        if (!data) return;
         inspect?.adapter.send(data);
       }
     );

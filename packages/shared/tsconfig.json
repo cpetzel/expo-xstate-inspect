@@ -1,18 +1,20 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "lib": ["ESNext", "DOM"],
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "strict": false,
     "skipLibCheck": true,
     "jsx": "react-native",
-
-    /* Basic Options */
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "composite": false,
-    "incremental": false,
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src"],
   "exclude": ["node_modules"]

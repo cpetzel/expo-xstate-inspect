@@ -70,10 +70,24 @@ See the [Demo App](./packages/demo-app/App.tsx) for reference implementation
 
 
 
+# Development
+
+Requires Node 20+ (npm workspaces). Everything is on Expo SDK 57 / React Native 0.86 / React 19 / XState 5.33 / `@statelyai/inspect` 0.7.
+
+```bash
+npm install --legacy-peer-deps   # also builds core + plugin (prepare)
+npm run build                    # rebuild core + plugin after changing them
+cd packages/demo-app
+npx expo run:android             # demo app needs a dev client build (native modules)
+```
+
+The plugin web UI is built with `npm run build:web -w expo-xstate-inspect`. Restart Metro after rebuilding it.
+
 # Contributing
 
 Contributions are very welcome!
 
 
-#### Notes: 
-@statelyai/inspect is using a very old version of partysocket (0.25). I added a dependency on their latest version (1.0) to address some of the [react native issues](https://github.com/partykit/partykit/issues/232) ([another issue](https://github.com/partykit/partykit/issues/516))
+#### Notes:
+- `react-native-xstate-inspect-core` ships its own React Native friendly `createInspector`. Upstream `@statelyai/inspect` >= 0.5 resolves to a Node-only build under Metro (`node:crypto`), so it is only used for types (and in the plugin web UI).
+- partysocket 1.x reads a bare global `crypto`, which Hermes lacks; core polyfills `crypto.randomUUID` for you.

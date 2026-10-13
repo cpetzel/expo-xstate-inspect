@@ -201,6 +201,8 @@ function DragAndResizeView(props: DragProps) {
     height: boxHeight.value,
     width: boxWidth.value,
     position: "absolute",
+    top: 0,
+    left: 0,
     flexDirection: "row",
   }));
 

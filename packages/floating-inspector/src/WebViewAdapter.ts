@@ -1,4 +1,4 @@
-import { StatelyInspectionEvent, StatelyActorEvent } from "@statelyai/inspect";
+import type { StatelyInspectionEvent } from "react-native-xstate-inspect-core";
 import WebView from "react-native-webview";
 import { WebViewRegistry, WebViewAddedListener } from "./WebViewRegistry";
 import { RefObject } from "react";
@@ -8,7 +8,7 @@ import {
   convertActorToStatelyEvent,
   isEventObject,
 } from "react-native-xstate-inspect-core";
-import EventEmitter from "react-native/Libraries/vendor/emitter/EventEmitter";
+import { EventEmitter } from "./EventEmitter";
 
 // TODO move this logic to a machine? like the plugin?
 export class WebViewAdapter implements ActorAwareAdapter, WebViewAddedListener {
@@ -53,7 +53,9 @@ export class WebViewAdapter implements ActorAwareAdapter, WebViewAddedListener {
         // send all actor and snapthos
         this.actorMap.forEach((actorRef) => {
           const actorEvent = convertActorToStatelyEvent(actorRef);
-          this.send(actorEvent);
+          if (actorEvent) {
+            this.send(actorEvent);
+          }
         });
       }
     });
@@ -74,7 +76,7 @@ export class WebViewAdapter implements ActorAwareAdapter, WebViewAddedListener {
   public send(event: StatelyInspectionEvent) {
     if (
       this.currentEventEmitter === undefined ||
-      this.currentEventEmitter?.listenerCount("message") < 1
+      (this.currentEventEmitter?.listenerCount("message") ?? 0) < 1
     ) {
       return;
     }

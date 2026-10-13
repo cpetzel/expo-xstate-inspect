@@ -1,4 +1,4 @@
-import { StatelyInspectionEvent } from "@statelyai/inspect";
+import type { StatelyInspectionEvent } from "react-native-xstate-inspect-core";
 import { ActorRefFrom, AnyActorRef, createActor } from "xstate";
 import { inspectMachine } from "./machine";
 import { ActorAwareAdapter } from "react-native-xstate-inspect-core";

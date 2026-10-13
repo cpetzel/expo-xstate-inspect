@@ -1,9 +1,10 @@
-import { StatelyInspectionEvent } from "@statelyai/inspect/src/types";
+import "./polyfills";
+import type { StatelyInspectionEvent } from "./";
 import { stringify } from "superjson";
 import { convertActorToStatelyEvent } from "./utils";
 
 import uuid from "react-native-uuid";
-import PartySocket, { WebSocket } from "partysocket";
+import PartySocket from "partysocket";
 
 import {
   AnyActorRef,
@@ -24,7 +25,7 @@ export const inspectMachine = setup({
     },
     context: {} as {
       actors: AnyActorRef[];
-      socket?: WebSocket;
+      socket?: PartySocket;
       sessionId: string;
       onSkyConnect?: (url: string) => void;
     },
@@ -43,15 +44,12 @@ export const inspectMachine = setup({
       | { type: "Stop" },
   },
   actors: {
-    createSocket: fromPromise<WebSocket, { sessionId: string }>(({ input }) => {
+    createSocket: fromPromise<PartySocket, { sessionId: string }>(({ input }) => {
       return new Promise((resolve, reject) => {
         const { sessionId } = input;
         const room = `inspect-${sessionId}`;
-        const socket = new PartySocket({
-          host,
-          room,
-          WebSocket,
-        });
+        // uses the global (React Native) WebSocket
+        const socket = new PartySocket({ host, room });
         resolve(socket);
       });
     }),
@@ -60,7 +58,7 @@ export const inspectMachine = setup({
       any,
       {
         sessionId: string;
-        socket: WebSocket;
+        socket: PartySocket;
         onSkyConnect?: (url: string) => void;
       }
     >(({ sendBack, input }) => {
@@ -117,7 +115,10 @@ export const inspectMachine = setup({
       // send all actors
       context.actors.forEach((actorRef) => {
         const actorEvent = convertActorToStatelyEvent(actorRef);
-        context.socket!!.send(stringify(actorEvent));
+        // finished actors have no event to replay
+        if (actorEvent) {
+          context.socket!!.send(stringify(actorEvent));
+        }
       });
     },
     sendEventToInspector: ({ context, event }) => {

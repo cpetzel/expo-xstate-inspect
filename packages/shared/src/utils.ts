@@ -1,7 +1,12 @@
-import pkg from "@statelyai/inspect/package.json";
 import safeStringify from "safe-stable-stringify";
 import { AnyActorRef } from "xstate";
-import { StatelyActorEvent } from "@statelyai/inspect";
+import type { StatelyActorEvent } from "@statelyai/inspect";
+
+// @statelyai/inspect does not export package.json, so keep the version here
+export const INSPECT_VERSION = "0.7.2";
+
+const replacer = (_key: string, value: any) =>
+  typeof value === "function" ? { type: value.name } : value;
 
 function getRoot(actorRef: AnyActorRef) {
   let marker: AnyActorRef | undefined = actorRef;
@@ -50,11 +55,14 @@ export function convertActorToStatelyEvent(actorRef: AnyActorRef) {
     name,
     sessionId,
     createdAt: Date.now().toString(),
-    _version: pkg.version,
+    _version: INSPECT_VERSION,
     rootId,
     parentId,
     id: null as any,
     definition,
-    snapshot: snapshot ?? { status: "active" },
+    // plain JSON so replayed events survive any transport (circular refs, fns, actor refs)
+    snapshot: JSON.parse(safeStringify(snapshot, replacer) ?? "null") ?? {
+      status: "active",
+    },
   } satisfies StatelyActorEvent;
 }

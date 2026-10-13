@@ -1,5 +1,5 @@
 import type { InspectorOptions } from ".";
-import { Inspector } from "@statelyai/inspect/src/types";
+import type { Inspector } from "./";
 
 import { createActorAwareInspector } from "./createInspector";
 import { PartySocketAdapter } from "./PartySocketAdapter";
@@ -16,7 +16,7 @@ export function useSkyXstateInspector(options: SkyOptions = {}): TSkyInspector {
       ...options,
     } as Required<SkyOptions>;
 
-    const inspector = createSkyInspector(options);
+    const inspector = createSkyInspector(resolvedOptions);
     if (resolvedOptions.autoStart) {
       inspector.start();
     }

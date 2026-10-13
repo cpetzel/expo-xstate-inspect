@@ -36,7 +36,7 @@ const useContextProviders = true;
 
 export default function App() {
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       {useContextProviders ? <AppUsingProvider /> : <AppUsingHooks />}
     </GestureHandlerRootView>
   );
